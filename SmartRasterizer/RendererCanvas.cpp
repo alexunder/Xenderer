@@ -139,3 +139,44 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
 {
 	
 }
+
+#define ROUND(a) ((unsigned int)(a + 0.5))
+
+void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+{
+	unsigned int dx = x2 - x1;
+	unsigned int dy = y2 - y1;
+
+	unsigned int steps = 0;
+	float xIncrement;
+	float yIncrement;
+
+	if (abs(dx) > abs(dy))
+	{
+		steps = abs(dx);
+	}
+	else
+	{
+		steps = abs(dy);
+	}
+
+	xIncrement = (float)dx / (float)steps;
+	yIncrement = (float)dy / (float)steps;
+
+	printf("xIncrement=%f\n", xIncrement);
+	printf("yIncrement=%f\n", yIncrement);
+
+	float x = x1;
+	float y = y1;
+
+	SetPixel(x, y, color);
+
+	int i;
+
+	for (i = 0; i < steps; i++)
+	{
+		x += xIncrement;
+		y += yIncrement;
+		SetPixel(ROUND(x), ROUND(y), color);
+	}
+}

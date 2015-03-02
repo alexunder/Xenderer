@@ -1,7 +1,7 @@
 
 SRCDIR=..
 
-CC = gcc  
+CC = g++
 SRC = main.cpp \
 	  $(SRCDIR)/Color.cpp \
 	  $(SRCDIR)/RendererCanvas.cpp \
