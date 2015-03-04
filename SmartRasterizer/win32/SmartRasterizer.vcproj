@@ -41,6 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
+				AdditionalIncludeDirectories="../"
 				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
@@ -60,6 +61,7 @@
 			/>
 			<Tool
 				Name="VCLinkerTool"
+				AdditionalOptions="/ENTRY:&quot;wWinMainCRTStartup&quot;"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -171,11 +173,11 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
-				RelativePath=".\Color.cpp"
+				RelativePath="..\Color.cpp"
 				>
 			</File>
 			<File
-				RelativePath=".\RendererCanvas.cpp"
+				RelativePath="..\RendererCanvas.cpp"
 				>
 			</File>
 			<File
@@ -183,7 +185,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.cpp"
+				RelativePath="..\stdafx.cpp"
 				>
 				<FileConfiguration
 					Name="Debug|Win32"
@@ -209,11 +211,11 @@
 			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
 			>
 			<File
-				RelativePath=".\Color.h"
+				RelativePath="..\Color.h"
 				>
 			</File>
 			<File
-				RelativePath=".\RendererCanvas.h"
+				RelativePath="..\RendererCanvas.h"
 				>
 			</File>
 			<File
@@ -225,7 +227,7 @@
 				>
 			</File>
 			<File
-				RelativePath=".\stdafx.h"
+				RelativePath="..\stdafx.h"
 				>
 			</File>
 			<File

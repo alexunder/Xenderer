@@ -144,8 +144,8 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
 
 void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
 {
-	unsigned int dx = x2 - x1;
-	unsigned int dy = y2 - y1;
+	int dx = x2 - x1;
+	int dy = y2 - y1;
 
 	unsigned int steps = 0;
 	float xIncrement;
@@ -162,9 +162,6 @@ void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, unsign
 
 	xIncrement = (float)dx / (float)steps;
 	yIncrement = (float)dy / (float)steps;
-
-	printf("xIncrement=%f\n", xIncrement);
-	printf("yIncrement=%f\n", yIncrement);
 
 	float x = x1;
 	float y = y1;

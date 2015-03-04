@@ -4,6 +4,9 @@
 #include "stdafx.h"
 #include "SmartRasterizer.h"
 #include "RendererCanvas.h"
+#include <windows.h>
+#include <tchar.h>
+#define WIN32_LEAN_AND_MEAN
 
 #define CANVAS_WIDTH  800
 #define CANVAS_HEIGHT 600
@@ -120,9 +123,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    gCanvas.CreateFrameBuffer(gwidth, gheight);
 
-   Color color(1.0,0.0,1.0);
-
-   gCanvas.DrawLine(color, 2, 2, 200, 200);
+   Color color1(1.0,0.0,1.0);
+   gCanvas.DrawLine(color1, 2, 2, 200, 200);
+   
+   Color color2(1.0, 0.0,0.0);
+   gCanvas.DrawLineWithDDA(color2, 201, 201, 400, 355);
 
    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
       CW_USEDEFAULT, 0, gwidth, gheight, NULL, NULL, hInstance, NULL);
