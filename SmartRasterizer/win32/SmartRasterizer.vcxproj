@@ -53,12 +53,12 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>../;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../;../include/math/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>true</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
     </ClCompile>
@@ -90,6 +90,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Color.cpp" />
+    <ClCompile Include="..\math\Matrix2f.cpp" />
+    <ClCompile Include="..\math\Matrix3f.cpp" />
+    <ClCompile Include="..\math\Matrix4f.cpp" />
+    <ClCompile Include="..\math\Quat4f.cpp" />
+    <ClCompile Include="..\math\Vector2f.cpp" />
+    <ClCompile Include="..\math\Vector3f.cpp" />
+    <ClCompile Include="..\math\Vector4f.cpp" />
     <ClCompile Include="..\RendererCanvas.cpp" />
     <ClCompile Include="..\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -99,6 +106,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Color.h" />
+    <ClInclude Include="..\include\math\Matrix2f.h" />
+    <ClInclude Include="..\include\math\Matrix3f.h" />
+    <ClInclude Include="..\include\math\Matrix4f.h" />
+    <ClInclude Include="..\include\math\Quat4f.h" />
+    <ClInclude Include="..\include\math\vecmath.h" />
+    <ClInclude Include="..\include\math\Vector2f.h" />
+    <ClInclude Include="..\include\math\Vector3f.h" />
+    <ClInclude Include="..\include\math\Vector4f.h" />
     <ClInclude Include="..\RendererCanvas.h" />
     <ClInclude Include="..\stdafx.h" />
     <ClInclude Include="Resource.h" />
