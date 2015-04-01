@@ -34,6 +34,12 @@
     <ClCompile Include="..\math\Vector4f.cpp">
       <Filter>Source Files\math</Filter>
     </ClCompile>
+    <ClCompile Include="..\ModelLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Object.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\RendererCanvas.h">
@@ -77,6 +83,12 @@
     </ClInclude>
     <ClInclude Include="..\include\math\Vector4f.h">
       <Filter>Header Files\math</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ModelLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Object.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

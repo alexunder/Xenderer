@@ -97,6 +97,8 @@
     <ClCompile Include="..\math\Vector2f.cpp" />
     <ClCompile Include="..\math\Vector3f.cpp" />
     <ClCompile Include="..\math\Vector4f.cpp" />
+    <ClCompile Include="..\ModelLoader.cpp" />
+    <ClCompile Include="..\Object.cpp" />
     <ClCompile Include="..\RendererCanvas.cpp" />
     <ClCompile Include="..\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -106,6 +108,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Color.h" />
+    <ClInclude Include="..\ModelLoader.h" />
     <ClInclude Include="..\include\math\Matrix2f.h" />
     <ClInclude Include="..\include\math\Matrix3f.h" />
     <ClInclude Include="..\include\math\Matrix4f.h" />
@@ -114,6 +117,7 @@
     <ClInclude Include="..\include\math\Vector2f.h" />
     <ClInclude Include="..\include\math\Vector3f.h" />
     <ClInclude Include="..\include\math\Vector4f.h" />
+    <ClInclude Include="..\Object.h" />
     <ClInclude Include="..\RendererCanvas.h" />
     <ClInclude Include="..\stdafx.h" />
     <ClInclude Include="Resource.h" />
