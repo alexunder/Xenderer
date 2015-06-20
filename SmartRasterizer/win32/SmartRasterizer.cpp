@@ -4,6 +4,8 @@
 #include "stdafx.h"
 #include "SmartRasterizer.h"
 #include "RendererCanvas.h"
+#include "MeshObjectModel.h"
+#include "ModelLoader.h"
 #include <windows.h>
 #include <tchar.h>
 #define WIN32_LEAN_AND_MEAN
@@ -21,6 +23,7 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 RendererCanvas gCanvas;
 int gwidth;
 int gheight;
+MeshObjectModel * gMeshObject = NULL;
 
 // Forward declarations of functions included in this code module:
 ATOM				MyRegisterClass(HINSTANCE hInstance);
@@ -118,6 +121,14 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    hInst = hInstance; // Store instance handle in our global variable
 
+   const char * path = "cubic.obj";
+   bool ret = loadObjModel(path, &gMeshObject);
+
+   if (ret == false)
+   {
+	   return false;
+   }
+
    gwidth  = CANVAS_WIDTH;
    gheight = CANVAS_HEIGHT;
 
@@ -193,6 +204,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 	case WM_DESTROY:
+		if (gMeshObject != NULL)
+			delete gMeshObject;
+
 		PostQuitMessage(0);
 		break;
 	default:

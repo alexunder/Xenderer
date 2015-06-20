@@ -98,7 +98,7 @@
     <ClCompile Include="..\math\Vector3f.cpp" />
     <ClCompile Include="..\math\Vector4f.cpp" />
     <ClCompile Include="..\ModelLoader.cpp" />
-    <ClCompile Include="..\Object.cpp" />
+    <ClCompile Include="..\MeshObjectModel.cpp" />
     <ClCompile Include="..\RendererCanvas.cpp" />
     <ClCompile Include="..\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -117,7 +117,7 @@
     <ClInclude Include="..\include\math\Vector2f.h" />
     <ClInclude Include="..\include\math\Vector3f.h" />
     <ClInclude Include="..\include\math\Vector4f.h" />
-    <ClInclude Include="..\Object.h" />
+    <ClInclude Include="..\MeshObjectModel.h" />
     <ClInclude Include="..\RendererCanvas.h" />
     <ClInclude Include="..\stdafx.h" />
     <ClInclude Include="Resource.h" />

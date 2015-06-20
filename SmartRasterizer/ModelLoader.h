@@ -6,8 +6,8 @@
 #ifndef __H_MODEL_LOADER
 #define __H_MODEL_LOADER
 
-#include "Object.h"
+#include "MeshObjectModel.h"
 
-bool loadObjModel(const char * path, ObjectModel & obj);
+bool loadObjModel(const char * path, MeshObjectModel ** obj);
 
 #endif

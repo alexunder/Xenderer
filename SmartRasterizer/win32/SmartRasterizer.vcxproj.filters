@@ -37,7 +37,7 @@
     <ClCompile Include="..\ModelLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\Object.cpp">
+    <ClCompile Include="..\MeshObjectModel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -87,7 +87,7 @@
     <ClInclude Include="..\ModelLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\Object.h">
+    <ClInclude Include="..\MeshObjectModel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
