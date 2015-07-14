@@ -31,7 +31,8 @@ public:
 	//outputs PPM image to 'out'
 	void writePPM(ostream& out);
 	void readPPM(string file_name);
-
+private:
+	void destroyRaster();
 private:
 	XRGB** mRaster;
 	int mWidth;
