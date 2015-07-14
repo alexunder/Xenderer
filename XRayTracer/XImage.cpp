@@ -77,3 +77,16 @@ void XImage::gammaCorrect(float gamma)
 							 );
 	}
 }
+
+void XImage::writePPM(ostream& out)
+{
+	//output header
+	out << "P6\n";
+	out << mWidth << ' ' << mHeight << '\n';
+	out << "255\n";
+
+	int i;
+	int j;
+	unsigned int ired, igreen, iblue;
+	unsigned char red, green, blue;
+}
