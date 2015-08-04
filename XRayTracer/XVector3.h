@@ -288,4 +288,83 @@ inline XVector3 operator-(const XVector3& v1, const XVector3& v2)
 	return XVector(v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z());
 }
 
+inline XVector& XVector3::operator+=(const XVector3& v2)
+{
+	*this = *this + v2;
+}
+
+inline XVector3& XVector3::operator=(const XVector4& v2)
+{
+	mElement[0] = v2.x();
+	mElement[1] = v2.y();
+	mElement[2] = v2.z();
+}
+
+inline XVector3& XVector3::operator-=(const XVector& v2)
+{
+	*this = *this - v2;
+	return *this;
+}
+
+inline XVector3& XVector3::operator*=(float t)
+{
+	*this = *this * t;
+	return *this;
+}
+
+inline XVector3& XVector3::operator/=(float t)
+{
+	*this = *this / t;
+	return *this;
+}
+inline float dot(const XVector3 &v1, const XVector3 &v2)
+{
+	return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v1.z();
+}
+
+inline XVector3 cross(const XVector3 &v1, const XVector3 &v2)
+{
+	XVector3 temp;
+	float e0 = v1.y() * v2.z() - v1.z() * v2.y();
+	float e1 = v1.z() * v2.x() - v1.x() * v2.z();
+	float e2 = v1.x() * v2.y() - v1.y() * v2.x();
+
+	temp.setX(e0);
+	temp.setY(e1);
+	temp.setZ(e2);
+
+	return temp;
+}
+
+inline XVector3 unitVector(const XVector3& v)
+{
+	float length = v.length();
+	return v / length;
+}
+
+inline XVector3 minVec(const XVector3& v1, const XVector& v2)
+{
+	XVector3 vec(v1);
+	if (v2.x() < v1.x())
+		vec.setX(v2.x());
+	if (v2.y() < v1.y())
+		vec.setY(v2.y());
+	if (v2.z() < v1.z())
+		vec.setZ(v2.z());
+
+	return vec;
+}
+
+inline XVector3 maxVec(const XVector3& v1, const XVector& v2)
+{
+	XVector3 vec(v1);
+	if (v2.x() > v1.x())
+		vec.setX(v2.x());
+	if (v2.y() > v1.y())
+		vec.setY(v2.y());
+	if (v2.z() > v1.z())
+		vec.setZ(v2.z());
+
+	return vec;
+}
 #endif
