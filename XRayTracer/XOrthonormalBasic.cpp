@@ -51,4 +51,67 @@ void OrthonormalBasic::initFromW(const XVector3& w)
 	mV = cross(mW, mU);
 }
 
+void OrthonormalBasic::initFromUV( const XVector3 & u, const XVector3 & v)
+{
+	mU = unitVector(u);
+	mW = unitVector( cross(u, v) );
+	mV = cross(mU, mW);
+}
 
+void OrthonormalBasic::initFromVU( const XVector3 & v, const XVector3 & u)
+{
+	mV = unitVector(v);
+	mW = unitVector( cross(u, v) );
+	mU = cross(mV, mW);
+}
+
+void OrthonormalBasic::initFromUW( const XVector3 & u, const XVector3 & w)
+{
+	mU = unitVector(u);
+	mV = unitVector( cross(u, w) );
+	mW = cross(mU, mV);
+}
+
+void OrthonormalBasic::initFromWV( const XVector3 & w, const XVector3 & u)
+{
+	mW = unitVector(w);
+	mV = unitVector( cross(u, w) );
+	mU = cross(mV, mW);
+}
+
+void OrthonormalBasic::initFromVW( const XVector3 & v, const XVector3 & w)
+{
+	mV = unitVector(v);
+	mU = unitVector( cross(v, w) );
+	mW = cross(mU, mV);
+}
+
+void OrthonormalBasic::initFromWV( const XVector3 & w, const XVector3 & v)
+{
+	mW = unitVector(w);
+	mU = unitVector( cross(v, w) );
+	mV = cross(mU, mW);
+}
+
+bool operator==(const OrthonormalBasic & o1, const OrthonormalBasic & o2)
+{
+	return (o1.u() == o2.u() && o1.v() == o2.v() && o1.w() == o2.w());
+}
+
+istream & operator>>( istream & is, OrthonormalBasic & t)
+{
+	XVector3 newU;
+	XVector3 newV;
+	XVector3 newW;
+
+	is >> newU >> newV >> newW;
+	t.initFromUV(newU, newV);
+
+	return is;
+}
+
+ostream & operator<<( ostream & os, const OrthonormalBasic & t)
+{
+	os << t.u() << "\n" << t.v() << "\n" << t.w() << "\n";
+	return os;
+}
