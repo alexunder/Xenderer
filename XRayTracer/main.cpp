@@ -34,4 +34,34 @@ int main()
 
 	XImage im(500, 500);
 
+	//loop over pixel
+	int i;
+	int j;
+	int k;
+
+	for (i = 0; i < 500; i++)
+	for (j = 0; j < 500; j++)
+	{
+		tmax = 100000.0f;
+		is_a_hit = false;
+
+		XRay r(XVector(i, j, 0), dir);
+
+		//loop over list of shapes
+		for (k = 0; k < shapes.size(); k++)
+		{
+			if (shapes[k]->hit(r, 0.00001f, tmax, rec))
+			{
+				tmax = rec.t;
+				is_a_hit = true;
+			}
+		}
+
+		if (is_a_hit)
+			im.set(i, j, rec.color);
+		else
+			im.set(i, j, XRGB(0.2, 0.2, 0.2));
+	}
+	
+	im.writePPM(cour);
 }
