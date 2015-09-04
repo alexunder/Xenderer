@@ -6,16 +6,13 @@
 */
 
 #include "XImage.h"
-#include "iostream"
-
-using namespace std;
 
 XImage::XImage()
 {
 
 }
 
-XImage::XImage(int width, iny height)
+XImage::XImage(int width, int height)
 {
 	mWidth = width;
 	mHeight = height;
@@ -24,11 +21,11 @@ XImage::XImage(int width, iny height)
 	mRaster = new XRGB*[mWidth];
 
 	int i;
-	for (i = 0; i < m_width; i++)
+	for (i = 0; i < mWidth; i++)
 		mRaster[i] = new XRGB[mHeight];
 }
 
-XImage::XImage(int width, iny height, XRGB background)
+XImage::XImage(int width, int height, XRGB background)
 {
 	mWidth = width;
 	mHeight = height;
@@ -67,7 +64,7 @@ bool XImage::setPixel(int x, int y, const XRGB & color)
 void XImage::gammaCorrect(float gamma)
 {
 	XRGB temp;
-	float power = 1.0 / gama;
+	float power = 1.0 / gamma;
 
 	int i;
 	int j;
@@ -78,8 +75,7 @@ void XImage::gammaCorrect(float gamma)
 		temp = mRaster[i][j];
 		mRaster[i][j] = XRGB(pow(temp.r(), power),
 							 pow(temp.g(), power),
-							 pow(temp.b(), power),
-							 );
+							 pow(temp.b(), power));
 	}
 }
 
@@ -149,7 +145,7 @@ void XImage::readPPM(string file_name)
 	if (!in.is_open())
 	{
 		cerr << "ERROR -- Couldn't open file \'" << file_name <<"\'.\n";
-		exit(-1);
+		return;
 	}
 	
 	char ch, type;
@@ -167,8 +163,8 @@ void XImage::readPPM(string file_name)
 
 	destroyRaster();
 	//allocate raster
-	mRaster = new XRGB*[m_width];
-	for (i = 0; i < m_width; i++)
+	mRaster = new XRGB*[mWidth];
+	for (i = 0; i < mWidth; i++)
 		mRaster[i] = new XRGB[mHeight];
 
 	//clean up newline

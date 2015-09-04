@@ -18,7 +18,7 @@ using namespace std;
 
 int main()
 {
-	HitRecor rec;
+	HitRecord rec;
 	bool is_a_hit;
 
 	float tmax;
@@ -26,8 +26,8 @@ int main()
 
 	//geometry
 	vector<XShape*> shapes;
-	shaped.push_back(new XSphere(XVector3(250, 250, -1000), 150, XRGB(.2, .2, .8)));
-	shaped.push_back(new XTriangle(XVector3(300.0f, 600.0f, -800),
+	shapes.push_back(new XSphere(XVector3(250, 250, -1000), 150, XRGB(.2, .2, .8)));
+	shapes.push_back(new XTriangle(XVector3(300.0f, 600.0f, -800),
 								   XVector3(0.0f, 100.0f, -1000),
 								   XVector3(450.0f, 20.0f, -1000),
 								   XRGB(.8, .2, .2)) );
@@ -45,23 +45,27 @@ int main()
 		tmax = 100000.0f;
 		is_a_hit = false;
 
-		XRay r(XVector(i, j, 0), dir);
+		XRay r(XVector3(i, j, 0), dir);
 
 		//loop over list of shapes
 		for (k = 0; k < shapes.size(); k++)
 		{
 			if (shapes[k]->hit(r, 0.00001f, tmax, rec))
 			{
+				//printf("Hit the shape, i=%d, j=%d\n", i, j);
 				tmax = rec.t;
 				is_a_hit = true;
 			}
 		}
 
 		if (is_a_hit)
-			im.set(i, j, rec.color);
+			im.setPixel(i, j, rec.color);
 		else
-			im.set(i, j, XRGB(0.2, 0.2, 0.2));
+			im.setPixel(i, j, XRGB(1.0, 1.0, 1.0));
 	}
 	
-	im.writePPM(cour);
+	ofstream file;
+	file.open("image.ppm");		
+	im.writePPM(file);
+	file.close();
 }

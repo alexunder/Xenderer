@@ -6,6 +6,8 @@
 
 #include "XVector3.h"
 
+using namespace std;
+
 istream & operator>>(istream &is, XVector3 &t)
 {
 	float temp;
@@ -20,7 +22,7 @@ istream & operator>>(istream &is, XVector3 &t)
 	return is;
 }
 
-ostream & operator<<(ostream &os, XVector &t)
+ostream & operator<<(ostream &os, const XVector3 &t)
 {
 	os << '(' <<t.x() << " "
 			  <<t.y() << " "
@@ -29,7 +31,7 @@ ostream & operator<<(ostream &os, XVector &t)
 	return os;
 }
 
-float tripleProduct(const XVector &v1, const XVector3 &v2, const XVector3 &v3)
+float tripleProduct(const XVector3 &v1, const XVector3 &v2, const XVector3 &v3)
 {
 	return dot((cross(v1, v2)), v3);
 }

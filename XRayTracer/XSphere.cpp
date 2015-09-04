@@ -6,22 +6,31 @@
 */
 
 #include "XSphere.h"
-
+#include <stdio.h>
 
 XSphere::XSphere(const XVector3 & center, float radius, const XRGB color)
 	: mCenter(center), mRadius(radius), mColor(color)
 {
+#ifdef DEBUG
+	cout << "mCenter=" << mCenter<<endl;
+	cout << "mRadius=" << mRadius<<endl;
+	cout << "mColor="  << mColor<<endl;
+#endif
 }
 
 //BBox bouldingBox() const;
 
-bool XSphere::hit(const XRay & r, float tmin, float tmax, float time, HitRecord& record) const
+bool XSphere::hit(const XRay & r, float tmin, float tmax, HitRecord& record) const
 {
 	XVector3 temp = r.origin() - mCenter;
 
 	double a = dot(r.direction(), r.direction());
 	double b = 2*dot(r.direction(), temp);
 	double c = dot(temp, temp) - mRadius*mRadius;
+
+#ifdef DEBUG
+	printf("XSphere::hit, a=%f, b=%f, c=%f\n", a, b, c);	
+#endif
 
 	double discriminant = b*b - 4*a*c;
 
@@ -36,6 +45,9 @@ bool XSphere::hit(const XRay & r, float tmin, float tmax, float time, HitRecord&
 		if (t < tmin || t > tmax)
 			return false;
 
+#ifdef DEBUG
+		printf("XSphere::hit,there is a hit, t=%f\n", t);	
+#endif
 		record.t = t;
 		record.normal = unitVector(r.origin() + t*r.direction() - mCenter);
 		record.color = mColor;
@@ -45,7 +57,7 @@ bool XSphere::hit(const XRay & r, float tmin, float tmax, float time, HitRecord&
 	return false;
 }
 
-bool XSphere::shadowHit(const XRay & r, float tmin, float tmax, float time) const
+bool XSphere::shadowHit(const XRay & r, float tmin, float tmax) const
 {
 	XVector3 temp = r.origin() - mCenter;
 

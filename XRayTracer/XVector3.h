@@ -9,7 +9,9 @@
 #define __X_VECTOR3_H
 
 #include <math.h>
-#include <iostream.h>
+#include <iostream>
+
+using namespace std;
 
 class XVector3
 {
@@ -25,9 +27,9 @@ public:
 		*this = v;
 	}
 
-	float x() { return mElement[0]; }
-	float y() { return mElement[1]; }
-	float z() { return mElement[2]; }
+	float x() const { return mElement[0]; }
+	float y() const { return mElement[1]; }
+	float z() const { return mElement[2]; }
 
 	const XVector3& operator+() const;
 	XVector3 operator-() const;
@@ -64,8 +66,8 @@ public:
 	int indexOfMaxComponent() const;
 	int indexOfMaxAbsComponent() const;
 
-	friend bool operator==(const XVector3& v1, const XVector3$ v2);
-	friend bool operator=!(const XVector3& v1, const XVector3$ v2);
+	friend bool operator==(const XVector3& v1, const XVector3& v2);
+	friend bool operator!=(const XVector3& v1, const XVector3& v2);
 
 	friend istream &operator>>(istream &is, XVector3 &t);
 	friend ostream &operator<<(ostream &os, const XVector3 &t);
@@ -114,7 +116,7 @@ inline float XVector3::length() const
 	return sqrt(mElement[0]*mElement[0] +  mElement[1]*mElement[1] + mElement[2]*mElement[2]);
 }
 
-inline float XVector3::squaredLength() const
+inline float XVector3::squareLength() const
 {
 	return mElement[0]*mElement[0] +  mElement[1]*mElement[1] + mElement[2]*mElement[2];
 }
@@ -280,27 +282,27 @@ inline XVector3 operator/(const XVector3& vec, float scalar)
 
 inline XVector3 operator+(const XVector3& v1, const XVector3& v2)
 {
-	return XVector(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z());
+	return XVector3(v1.x() + v2.x(), v1.y() + v2.y(), v1.z() + v2.z());
 }
 
 inline XVector3 operator-(const XVector3& v1, const XVector3& v2)
 {
-	return XVector(v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z());
+	return XVector3(v1.x() - v2.x(), v1.y() - v2.y(), v1.z() - v2.z());
 }
 
-inline XVector& XVector3::operator+=(const XVector3& v2)
+inline XVector3& XVector3::operator+=(const XVector3& v2)
 {
 	*this = *this + v2;
 }
 
-inline XVector3& XVector3::operator=(const XVector4& v2)
+inline XVector3& XVector3::operator=(const XVector3& v2)
 {
 	mElement[0] = v2.x();
 	mElement[1] = v2.y();
 	mElement[2] = v2.z();
 }
 
-inline XVector3& XVector3::operator-=(const XVector& v2)
+inline XVector3& XVector3::operator-=(const XVector3& v2)
 {
 	*this = *this - v2;
 	return *this;
@@ -342,7 +344,7 @@ inline XVector3 unitVector(const XVector3& v)
 	return v / length;
 }
 
-inline XVector3 minVec(const XVector3& v1, const XVector& v2)
+inline XVector3 minVec(const XVector3& v1, const XVector3& v2)
 {
 	XVector3 vec(v1);
 	if (v2.x() < v1.x())
@@ -355,7 +357,7 @@ inline XVector3 minVec(const XVector3& v1, const XVector& v2)
 	return vec;
 }
 
-inline XVector3 maxVec(const XVector3& v1, const XVector& v2)
+inline XVector3 maxVec(const XVector3& v1, const XVector3& v2)
 {
 	XVector3 vec(v1);
 	if (v2.x() > v1.x())
@@ -367,4 +369,5 @@ inline XVector3 maxVec(const XVector3& v1, const XVector& v2)
 
 	return vec;
 }
+
 #endif

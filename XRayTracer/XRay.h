@@ -7,12 +7,14 @@
 #ifndef _X_RAY_H
 #define _X_RAY_H
 
-#include "XVector.h"
+#include "XVector3.h"
+
+using namespace std;
 
 class XRay
 {
 public:
-	Xray(const XVector3& a, const XVector3& b)
+	XRay(const XVector3& a, const XVector3& b)
 	{
 		mData[0] = a;	
 		mData[1] = b;	

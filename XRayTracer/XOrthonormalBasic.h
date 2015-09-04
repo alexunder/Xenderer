@@ -40,11 +40,11 @@ public:
 	
 	void initFromUW( const XVector3& u, const XVector3& w);
 	void initFromWU( const XVector3& w, const XVector3& u);
-	
+
 	void initFromVW( const XVector3& v, const XVector3& w);
 	void initFromWV( const XVector3& w, const XVector3& v);
 
-	friend istream &operator>>(istream & is, OrthonormalBaisc &t);
+	friend istream &operator>>(istream & is, OrthonormalBasic &t);
 	friend ostream &operator<<(ostream & os, const OrthonormalBasic &t);
 
 	friend bool operator==(const OrthonormalBasic & o1,const OrthonormalBasic & o2);

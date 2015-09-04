@@ -8,7 +8,9 @@
 #ifndef  __X_RGB_H
 #define  __X_RGB_H
 
-#include <iostream.h>
+#include <iostream>
+
+using namespace std;
 
 class XRGB
 {
@@ -71,7 +73,7 @@ public:
 	friend XRGB operator*(const XRGB& c1, const XRGB& c2);
 	friend XRGB operator/(const XRGB& c1, const XRGB& c2);
 	friend XRGB operator+(const XRGB& c1, const XRGB& c2);
-ptivate:
+private:
 	float m_r;
 	float m_g;
 	float m_b;
@@ -162,11 +164,6 @@ inline XRGB operator*(float f, const XRGB& c)
 inline XRGB operator/(const XRGB& c, float f)
 {
 	return XRGB(c.m_r/f, c.m_g/f, c.m_b/f);
-}
-
-inline XRGB operator*(const XRGB& c1, const XRGB& c2)
-{
-	return XRGB(c1.m_r*c2.m_r, c1.m_g*c2.m_g, c1.m_b*c2.m_b);
 }
 
 inline XRGB operator/(const XRGB& c1, const XRGB& c2)

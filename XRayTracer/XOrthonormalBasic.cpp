@@ -31,7 +31,7 @@ void OrthonormalBasic::initFromV(const XVector3& v)
 	mV = unitVector(v);
 	mU = cross(mV, n);
 
-	if (mU.squaredlength() < ONB_EPSILON)
+	if (mU.squareLength() < ONB_EPSILON)
 		mU = cross(mV, m);
 
 	mW = cross(mU, mV);
@@ -72,7 +72,7 @@ void OrthonormalBasic::initFromUW( const XVector3 & u, const XVector3 & w)
 	mW = cross(mU, mV);
 }
 
-void OrthonormalBasic::initFromWV( const XVector3 & w, const XVector3 & u)
+void OrthonormalBasic::initFromWU( const XVector3 & w, const XVector3 & u)
 {
 	mW = unitVector(w);
 	mV = unitVector( cross(u, w) );
@@ -98,7 +98,7 @@ bool operator==(const OrthonormalBasic & o1, const OrthonormalBasic & o2)
 	return (o1.u() == o2.u() && o1.v() == o2.v() && o1.w() == o2.w());
 }
 
-istream & operator>>( istream & is, OrthonormalBasic & t)
+istream & operator>>(istream & is, OrthonormalBasic & t)
 {
 	XVector3 newU;
 	XVector3 newV;
@@ -110,7 +110,7 @@ istream & operator>>( istream & is, OrthonormalBasic & t)
 	return is;
 }
 
-ostream & operator<<( ostream & os, const OrthonormalBasic & t)
+ostream & operator<<(ostream & os, const OrthonormalBasic & t)
 {
 	os << t.u() << "\n" << t.v() << "\n" << t.w() << "\n";
 	return os;
