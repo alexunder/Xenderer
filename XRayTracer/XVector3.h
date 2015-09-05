@@ -321,7 +321,7 @@ inline XVector3& XVector3::operator/=(float t)
 }
 inline float dot(const XVector3 &v1, const XVector3 &v2)
 {
-	return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v1.z();
+	return v1.x() * v2.x() + v1.y() * v2.y() + v1.z() * v2.z();
 }
 
 inline XVector3 cross(const XVector3 &v1, const XVector3 &v2)

@@ -29,6 +29,7 @@ bool XSphere::hit(const XRay & r, float tmin, float tmax, HitRecord& record) con
 	double c = dot(temp, temp) - mRadius*mRadius;
 
 #ifdef DEBUG
+	cout << "temp="  << temp<<endl;
 	printf("XSphere::hit, a=%f, b=%f, c=%f\n", a, b, c);	
 #endif
 
