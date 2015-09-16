@@ -24,8 +24,8 @@ struct HitRecord
 class XShape
 {
 public:
-	virtual bool hit(const XRay & r, float tmin, float tmax, HitRecord& record) const=0;
-	virtual bool shadowHit(const XRay & r, float tmin, float tmax) const=0;
+	virtual bool hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time) const=0;
+	virtual bool shadowHit(const XRay & r, float tmin, float tmax, float time) const=0;
 };
 
 #endif

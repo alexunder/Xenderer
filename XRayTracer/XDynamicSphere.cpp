@@ -2,14 +2,15 @@
 * Copyright (C) 2015 2nd Foundation
 * All rights reserved
 *
-* The mplementation of Sphere 
+* The mplementation of Dynamic Sphere 
 */
 
-#include "XSphere.h"
+#include "XDynamicSphere.h"
 #include <stdio.h>
 
-XSphere::XSphere(const XVector3 & center, float radius, const XRGB color)
-	: mCenter(center), mRadius(radius), mColor(color)
+XDynamicSphere::XDynamicSphere(const XVector3 & center, float radius, const XRGB color,
+	float min_time, float max_time)
+	: mCenter(center), mRadius(radius), mColor(color), mMintime(min_time), mMaxtime(max_time)
 {
 #ifdef DEBUG
 	cout << "mCenter=" << mCenter<<endl;
@@ -20,9 +21,10 @@ XSphere::XSphere(const XVector3 & center, float radius, const XRGB color)
 
 //BBox bouldingBox() const;
 
-bool XSphere::hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time = 0) const
+bool XDynamicSphere::hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time) const
 {
-	XVector3 temp = r.origin() - mCenter;
+	XVector3 newCenter = getCenter(time);
+	XVector3 temp = r.origin() - newCenter;
 
 	double a = dot(r.direction(), r.direction());
 	double b = 2*dot(r.direction(), temp);
@@ -58,9 +60,10 @@ bool XSphere::hit(const XRay & r, float tmin, float tmax, HitRecord& record, flo
 	return false;
 }
 
-bool XSphere::shadowHit(const XRay & r, float tmin, float tmax, float time = 0) const
+bool XDynamicSphere::shadowHit(const XRay & r, float tmin, float tmax, float time) const
 {
-	XVector3 temp = r.origin() - mCenter;
+	XVector3 newCenter = getCenter(time);
+	XVector3 temp = r.origin() - newCenter;
 
 	double a = dot(r.direction(), r.direction());
 	double b = 2*dot(r.direction(), temp);
@@ -83,4 +86,12 @@ bool XSphere::shadowHit(const XRay & r, float tmin, float tmax, float time = 0) 
 	}
 	
 	return false;
+}
+
+XVector3 XDynamicSphere::getCenter(float time) const
+{
+	float realtime = time * mMaxtime + (1.0 - time) * mMintime;
+	return XVector3(mCenter.x() + realtime, 
+					mCenter.y() + realtime,
+					mCenter.z() + realtime);
 }

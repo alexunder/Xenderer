@@ -18,11 +18,13 @@ class XDynamicSphere : public XShape
 public:
 	XDynamicSphere(const XVector3 & center, float radius, const XRGB color,
 		float min_time, float max_time);
-	bool hit(const XRay & r, float tmin, float tmax, HitRecord& record) const;
-	bool shadowHit(const XRay & r, float tmin, float tmax) const;
+	bool hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time) const;
+	bool shadowHit(const XRay & r, float tmin, float tmax, float time) const;
 	XVector3 getCenter(float time) const;
 private:
 	XVector3 mCenter;
+	float mMintime;
+	float mMaxtime;
 	float mRadius;
 	XRGB  mColor;
 }; 

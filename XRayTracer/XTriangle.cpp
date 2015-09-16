@@ -14,7 +14,7 @@ XTriangle::XTriangle(const XVector3 & p0, const XVector3 & p1, const XVector3 & 
 }
 
 
-bool XTriangle::hit(const XRay & r, float tmin, float tmax, HitRecord& record) const
+bool XTriangle::hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time = 0) const
 {
 	float tval;
 	float a11 = mP0.x() - mP1.x();
@@ -82,7 +82,7 @@ bool XTriangle::hit(const XRay & r, float tmin, float tmax, HitRecord& record) c
 
 	return false;	
 }
-bool XTriangle::shadowHit(const XRay & r, float tmin, float tmax) const
+bool XTriangle::shadowHit(const XRay & r, float tmin, float tmax, float time = 0) const
 {
 	float tval;
 	float a11 = mP0.x() - mP1.x();

@@ -17,8 +17,8 @@ class XTriangle : public XShape
 {
 public:
 	XTriangle(const XVector3 & p0, const XVector3 & p1, const XVector3 & p2, const XRGB & color);
-	bool hit(const XRay & r, float tmin, float tmax, HitRecord& record) const;
-	bool shadowHit(const XRay & r, float tmin, float tmax) const;
+	bool hit(const XRay & r, float tmin, float tmax, HitRecord& record, float time) const;
+	bool shadowHit(const XRay & r, float tmin, float tmax, float time) const;
 private:
 	XVector3 mP0;
 	XVector3 mP1;

@@ -50,7 +50,7 @@ int main()
 		//loop over list of shapes
 		for (k = 0; k < shapes.size(); k++)
 		{
-			if (shapes[k]->hit(r, 0.00001f, tmax, rec))
+			if (shapes[k]->hit(r, 0.00001f, tmax, rec, 0))
 			{
 				//printf("Hit the shape, i=%d, j=%d\n", i, j);
 				tmax = rec.t;
