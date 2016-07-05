@@ -9,7 +9,8 @@ SRC = main.cpp \
 
 TARGET = SmartRasterizer
 CFLAGS = `pkg-config --cflags --libs gtk+-2.0`
-CFLAGS += -I ../
+CFLAGS += -I../
+CFLAGS += -I/usr/include/
 
 $(TARGET): $(SRC)
 	$(CC) $(SRC) -o $(TARGET) $(CFLAGS)
