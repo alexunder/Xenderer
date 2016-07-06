@@ -70,9 +70,13 @@ bool loadObjModel(const char * path, MeshObjectModel ** obj)
 			unsigned int uvIndex[3];
 			unsigned int normalIndex[3];
 			
-			int matches = fscanf(fp, "%d/%d/%d %d/%d/%d %d/%d/%d\n", &vertexIndex[0], &uvIndex[0], &normalIndex[0], &vertexIndex[1], &uvIndex[1], &normalIndex[1], &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-			if (matches != 9){
-				printf("File can't be read by our simple parser :-( Try exporting with other options\n");
+			int matches = fscanf(fp, "%d/%d/%d %d/%d/%d %d/%d/%d\n",
+                                     &vertexIndex[0], &uvIndex[0], &normalIndex[0],
+                                     &vertexIndex[1], &uvIndex[1], &normalIndex[1],
+                                     &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
+			if (matches != 9) {
+				printf("File can't be read by our simple parser \
+                         :-( Try exporting with other options\n");
 				return false;
 			}
 			number_mesh++;

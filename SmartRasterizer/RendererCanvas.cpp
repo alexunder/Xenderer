@@ -142,7 +142,9 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
 
 #define ROUND(a) ((unsigned int)(a + 0.5))
 
-void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, unsigned int y1, unsigned int x2, unsigned int y2)
+void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, 
+                                     unsigned int y1, unsigned int x2, 
+                                     unsigned int y2)
 {
 	int dx = x2 - x1;
 	int dy = y2 - y1;
