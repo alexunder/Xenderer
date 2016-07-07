@@ -22,9 +22,10 @@ typedef struct _Triangle {
     Vertex p3;
 } Triangle;
 
-class MeshObjectModel {
+class MeshObjectModel
+{
 public:
-	MeshObjectModel(Vector3f wc, int num_mesh, int num_vertise,
+	MeshObjectModel(int num_mesh, int num_vertise,
 		const int * vi, const int * ni, const int * uvi,
 		const Point * p, const Normal * n,
 		const float *uv);
@@ -35,13 +36,13 @@ public:
 
         if (m_VertexIndex != NULL)
             delete [] m_VertexIndex; 
-        
+
         if (m_pNormals != NULL)
             delete [] m_pNormals; 
 
         if (m_NormalIndex != NULL)
             delete [] m_NormalIndex; 
-        
+
         if (m_pUVs != NULL)
             delete [] m_pUVs; 
 
@@ -49,7 +50,6 @@ public:
             delete [] m_UVIndex; 
     }
 
-	void SetWorldPosition(float x, float y, float z);
 	void Transform(Matrix4f mt);
 private:
 	int m_num_triangles;
@@ -63,8 +63,6 @@ private:
 
 	float  * m_pUVs;
 	int * m_UVIndex;
-
-	Vector3f worldPosition;
 };
 
 #endif

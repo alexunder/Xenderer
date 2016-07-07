@@ -14,7 +14,7 @@ Point Transfer_From_Matrix4f(Matrix4f mt, Point ori)
 	return Point(ret.x(), ret.y(), ret.z());
 }
 
-MeshObjectModel::MeshObjectModel(Vector3f wc, int num_mesh, int num_vertices,
+MeshObjectModel::MeshObjectModel(int num_mesh, int num_vertices,
 						const int * vi, const int * ni, const int * uvi,
 						const Point * point, const Normal * normal,
 						const float *uv)
@@ -47,21 +47,6 @@ MeshObjectModel::MeshObjectModel(Vector3f wc, int num_mesh, int num_vertices,
     }
     else 
         m_pNormals = NULL;
-
-    //Prepare world transition matrix
-    worldPosition = wc;
-    Matrix4f mt(1.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 0.0,
-                worldPosition[0], worldPosition[1], worldPosition[2], 1.0);
-    // Transform mesh vertices to world space
-    for (int i = 0; i < m_num_vertices; ++i)
-        m_pVertices[i] = Transfer_From_Matrix4f(mt, point[i]);
-}
-
-void MeshObjectModel::SetWorldPosition(float x, float y, float z)
-{
-    worldPosition = Vector3f(x, y, z);
 }
 
 void MeshObjectModel::Transform(Matrix4f mt)

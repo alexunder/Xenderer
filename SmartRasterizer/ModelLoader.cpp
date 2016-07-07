@@ -135,8 +135,7 @@ bool loadObjModel(const char * path, MeshObjectModel ** obj)
 
 	int count = 0;
 	
-	Vector3f wordCoord(0.0, 0.0, 0.0);
-	*obj = new MeshObjectModel(wordCoord, number_mesh, number_vertices,
+	*obj = new MeshObjectModel(number_mesh, number_vertices,
 		vertex_index, normal_index, uv_index, 
 		vertexBuffer, normalBuffer, uvBuffer);
 

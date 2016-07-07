@@ -7,26 +7,22 @@
 #include <gtk/gtk.h>
 #include "stdafx.h"
 #include "RendererCanvas.h"
+#include "ModelLoader.h"
 
 char * input_file = NULL;
 int    width = 800;
 int    height = 800;
-int gWidth = 800;
-int gHeight = 600;
 bool testmode = false;
 RendererCanvas gCanvas;
 
-gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event, gpointer data)
+gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event, 
+                                                      gpointer data)
 {
 	cairo_t *cr = gdk_cairo_create(widget->window);
-	GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data((const unsigned char*)gCanvas.getframeBuffer(), 
-														  GDK_COLORSPACE_RGB, 
-														  TRUE, 
-														  8, 
-														  width,
-														  height,
-														  width*4,
-														  NULL, NULL);
+	GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(
+                        (const unsigned char*)gCanvas.getframeBuffer(), 
+						GDK_COLORSPACE_RGB, TRUE, 8, width, height,
+						width*4, NULL, NULL);
 	gdk_cairo_set_source_pixbuf(cr, pixframebuffer, 0, 0);
 	cairo_paint(cr);
 	g_object_unref(pixframebuffer);
@@ -65,6 +61,19 @@ int main (int argc, char *argv[])
 {
     parseArgs(argc, argv);
 
+    MeshObjectModel * pMesh = NULL;
+
+    if (input_file != NULL)
+    {
+       bool ret = loadObjModel(input_file, &pMesh);
+
+       if (ret == false)
+       {
+            fprintf(stderr, "Loaded OBJ file failed, just Exit.\n");
+            return 1;
+       }
+    }
+
     if (testmode == true)
 	{
         gtk_init (&argc, &argv);
@@ -84,5 +93,9 @@ int main (int argc, char *argv[])
         gtk_widget_show_all(window);
         gtk_main();
     }
+
+    if (pMesh != NULL)
+        delete pMesh;
+
     return 0;
 }
