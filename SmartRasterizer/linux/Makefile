@@ -3,11 +3,6 @@ SRCDIR=..
 
 CC = g++
 SRC = main.cpp \
-	  $(SRCDIR)/Color.cpp \
-	  $(SRCDIR)/RendererCanvas.cpp \
-	  $(SRCDIR)/stdafx.cpp \
-	  $(SRCDIR)/MeshObjectModel.cpp \
-	  $(SRCDIR)/ModelLoader.cpp \
       $(SRCDIR)/math/Matrix2f.cpp \
       $(SRCDIR)/math/Matrix3f.cpp \
       $(SRCDIR)/math/Matrix4f.cpp \
@@ -15,6 +10,11 @@ SRC = main.cpp \
       $(SRCDIR)/math/Vector2f.cpp \
       $(SRCDIR)/math/Vector3f.cpp \
       $(SRCDIR)/math/Vector4f.cpp \
+	  $(SRCDIR)/Color.cpp \
+	  $(SRCDIR)/RendererCanvas.cpp \
+	  $(SRCDIR)/stdafx.cpp \
+	  $(SRCDIR)/MeshObjectModel.cpp \
+	  $(SRCDIR)/ModelLoader.cpp \
 
 TARGET = SmartRasterizer
 CFLAGS = `pkg-config --cflags --libs gtk+-2.0`

@@ -5,8 +5,7 @@
 
 #include "ModelLoader.h"
 #include "MeshObjectModel.h"
-#include <stdio.h>
-#include <stdlib.h>
+#include "stdafx.h"
 
 #include <vector>
 
@@ -130,8 +129,8 @@ bool loadObjModel(const char * path, MeshObjectModel ** obj)
 
 	for (i = 0; i < mv_buffer.size(); i++)
 	{
-		uvBuffer[i * 2] = mv_buffer[i].x;
-		uvBuffer[i * 2 + 1] = mv_buffer[i].y;
+		uvBuffer[i * 2] = mv_buffer[i].x();
+		uvBuffer[i * 2 + 1] = mv_buffer[i].y();
 	}
 
 	int count = 0;

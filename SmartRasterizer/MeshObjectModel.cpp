@@ -4,13 +4,14 @@
 */
 
 #include "MeshObjectModel.h"
+#include "stdafx.h"
 
 Point Transfer_From_Matrix4f(Matrix4f mt, Point ori)
 {
 	Vector4f ret;
 	Vector4f original = Vector4f(ori);
 	ret = mt * original;
-	return Point(ret.x, ret.y, ret.z);
+	return Point(ret.x(), ret.y(), ret.z());
 }
 
 MeshObjectModel::MeshObjectModel(Vector3f wc, int num_mesh, int num_vertices,

@@ -6,7 +6,7 @@
 #include "Vector3f.h"
 
 typedef struct _vertex {
-    Vec4f point;
+    Vector4f point;
     float u;
     float v;
     Normal normal;
