@@ -137,7 +137,94 @@ void RendererCanvas::DrawLine(const Color &color, float x1, float y1, float x2, 
 	
 void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, int x2, int y2)
 {
-	
+	int dx = x2 - x1;
+	int dy = y2 - y1;
+
+    float slop = 0.0;
+    int i;
+    int sign = 1;
+
+
+    if (abs(dx) > abs(dy))
+    {
+        //Based on x
+        slop = dy / dx;
+        float d = slop;
+        int x;
+        int y = y1;
+
+        if (dx > 0 && dy > 0)
+        {
+            for (x = x1; i <= x2; x++)
+            {
+                SetPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    y++;
+                    d += slop - 1;
+                }
+            }
+        }
+        else if (dx > 0 && dy < 0)
+        {
+            for (x = x1; i <= x2; x++)
+            {
+                SetPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    y--;
+                    d += slop + 1;
+                }
+            }
+
+        }
+        else if (dx < 0 && dy > 0)
+        {
+            for (x = x1; i <= x2; x--)
+            {
+                SetPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    y++;
+                    d += slop + 1;
+                }
+            }
+        }
+        else if (dx < 0 && dy < 0)
+        {
+            for (x = x1; i <= x2; x--)
+            {
+                SetPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    y--;
+                    d = d - slop + 1;
+                }
+            }
+        }
+    }
+    else
+    {
+       //based on y
+       slop = dx / dy;
+
+    }
 }
 
 #define ROUND(a) ((unsigned int)(a + 0.5))
