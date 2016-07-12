@@ -43,7 +43,7 @@ unsigned int * RendererCanvas::getframeBuffer()
 	return mFrameBuffer;
 }
 
-void RendererCanvas::SetPixel(unsigned int x, unsigned int y, const Color &color)
+void RendererCanvas::SetPixel(int x, int y, const Color &color)
 {
 	if(x >= mWidth || y >= mHeight)
 		return;
@@ -56,7 +56,7 @@ void RendererCanvas::SetPixel(float x, float y, const Color &color)
 	if(x < 0.0f || y < 0.0f)
 		return;
 
-	SetPixel((unsigned int)x, (unsigned int)y, color);
+	SetPixel((int)x, (int)y, color);
 }
 
 void RendererCanvas::Clear()
@@ -141,21 +141,21 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
 	int dy = y2 - y1;
 
     float slop = 0.0;
-    int i;
-    int sign = 1;
-
+    float d;
+    int x;
+    int y;
 
     if (abs(dx) > abs(dy))
     {
         //Based on x
-        slop = dy / dx;
-        float d = slop;
-        int x;
-        int y = y1;
+        slop = (float)dy / (float)dx;
+        y = y1;
 
-        if (dx > 0 && dy > 0)
+        if (dx >= 0 && dy >= 0)
         {
-            for (x = x1; i <= x2; x++)
+            d = slop;
+            // The slop is positive
+            for (x = x1; x <= x2; x++)
             {
                 SetPixel(x, y, color);
                 if (d < 0.5)
@@ -169,9 +169,11 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
                 }
             }
         }
-        else if (dx > 0 && dy < 0)
+        else if (dx >= 0 && dy < 0)
         {
-            for (x = x1; i <= x2; x++)
+            d = slop;
+            // The slope is negative
+            for (x = x1; x <= x2; x++)
             {
                 SetPixel(x, y, color);
                 if (d > -0.5)
@@ -186,9 +188,11 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
             }
 
         }
-        else if (dx < 0 && dy > 0)
+        else if (dx < 0 && dy >= 0)
         {
-            for (x = x1; i <= x2; x--)
+            d = -slop;
+            // The slop is negative
+            for (x = x1; x >= x2; x--)
             {
                 SetPixel(x, y, color);
                 if (d < 0.5)
@@ -198,13 +202,16 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
                 else
                 {
                     y++;
-                    d += slop + 1;
+                    //d += slop + 1;
+                    d = d - slop -1;
                 }
             }
         }
         else if (dx < 0 && dy < 0)
         {
-            for (x = x1; i <= x2; x--)
+            d = -slop;
+            // The slop is positive
+            for (x = x1; x >= x2; x--)
             {
                 SetPixel(x, y, color);
                 if (d > -0.5)
@@ -221,17 +228,89 @@ void RendererCanvas::DrawLineWithBresenham(const Color &color, int x1, int y1, i
     }
     else
     {
-       //based on y
-       slop = dx / dy;
+        //based on y
+        slop = (float)dx / (float)dy;
+        x = x1;
+        if (dy >= 0 && dx >= 0)
+        {
+            d = slop;
+            // The slop is positive
+            for (y = y1; y <= y2; y++)
+            {
+                SetPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    x++;
+                    d += slop - 1;
+                }
+            }
+        }
+        else if (dy >= 0 && dx < 0)
+        {
+            d = slop;
+            // The slope is negative
+            for (y = y1; y <= y2; y++)
+            {
+                SetPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    x--;
+                    d += slop + 1;
+                }
+            }
 
+        }
+        else if (dy < 0 && dx >= 0)
+        {
+            d = -slop;
+            // The slop is negative
+            for (y = y1; y >= y2; y--)
+            {
+                SetPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    x++;
+                    //d += slop + 1;
+                    d = d - slop -1;
+                }
+            }
+        }
+        else if (dy < 0 && dx < 0)
+        {
+            d = -slop;
+            // The slop is positive
+            for (y = y1; y >= y2; y--)
+            {
+                SetPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    x--;
+                    d = d - slop + 1;
+                }
+            }
+        }
     }
 }
 
-#define ROUND(a) ((unsigned int)(a + 0.5))
+#define ROUND(a) ((int)(a + 0.5))
 
-void RendererCanvas::DrawLineWithDDA(const Color &color, unsigned int x1, 
-                                     unsigned int y1, unsigned int x2, 
-                                     unsigned int y2)
+void RendererCanvas::DrawLineWithDDA(const Color &color, int x1, int y1, int x2, int y2)
 {
 	int dx = x2 - x1;
 	int dy = y2 - y1;

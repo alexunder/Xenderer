@@ -79,8 +79,26 @@ int main (int argc, char *argv[])
         gtk_init (&argc, &argv);
 
         gCanvas.CreateFrameBuffer(width, height);
-        Color color(0.0,0.0,1.0);
-        gCanvas.DrawLineWithDDA(color, 2, 2, 200, 500);
+        //Color color1(0.0,0.0,1.0);
+        //gCanvas.DrawLineWithDDA(color1, 2, 2, 200, 500);
+        //Draw x and y Axis
+        Color colorAxis(0.0, 0.0, 0.0);
+        Color colorLine(1.0, 0.0, 1.0);
+        gCanvas.DrawLineWithBresenham(colorAxis, 0, height/2, width - 1, height/2);
+        //gCanvas.DrawLineWithDDA(colorAxis, 0, height/2, width - 1, height/2);
+        gCanvas.DrawLineWithBresenham(colorAxis, width/2, 0, width/2, height - 1);
+        //gCanvas.DrawLineWithDDA(colorAxis, width/2, 0, width/2, height - 1);
+
+        //Then draw 8 cases
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 + 200, height/2 + 50);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 + 50, height/2 + 200);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 - 200, height/2 - 50);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 - 50, height/2 - 200);
+
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 + 200, height/2 - 50);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 + 50, height/2 - 200);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 - 200, height/2 + 50);
+        gCanvas.DrawLineWithBresenham(colorLine, width/2, height/2, width/2 - 50, height/2 + 200);
 
         GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
         g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), NULL);

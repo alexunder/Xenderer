@@ -17,7 +17,7 @@ SRC = main.cpp \
 	  $(SRCDIR)/ModelLoader.cpp \
 
 TARGET = SmartRasterizer
-CFLAGS = `pkg-config --cflags --libs gtk+-2.0`
+CFLAGS = -g `pkg-config --cflags --libs gtk+-2.0`
 CFLAGS += -I../
 CFLAGS += -I../include/
 CFLAGS += -I../include/math/
