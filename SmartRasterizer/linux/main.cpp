@@ -16,6 +16,7 @@ int    width = 800;
 int    height = 800;
 bool test_line_mode = false;
 bool test_triangle_mode = false;
+bool test_rasterize_triangle_mode = false;
 RendererCanvas gCanvas;
 
 gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event, 
@@ -60,6 +61,10 @@ void parseArgs(int argc, char **argv)
         else if (!strcmp(argv[i], "-triangle"))
         {
             test_triangle_mode = true;
+        }
+        else if (!strcmp(argv[i], "-rastertriangle"))
+        {
+            test_rasterize_triangle_mode = true; 
         }
     }
 }
@@ -111,6 +116,19 @@ void test_triangle_lines()
     gCanvas.DrawLineWithBresenham(color, x2, y2, x0, y0);
 }
 
+void test_triangle_rasterize()
+{
+    Color color(0.0, 0.0, 1.0);
+    int x0 = 10;
+    int y0 = 10;
+    int x1 = 600;
+    int y1 = 156;
+    int x2 = 650;
+    int y2 = 420;
+    gCanvas.RasterizeTriangle(color, x0, y0, x1, y1, x2, y2);
+}
+
+
 int main (int argc, char *argv[])
 {
     parseArgs(argc, argv);
@@ -131,7 +149,8 @@ int main (int argc, char *argv[])
     gtk_init (&argc, &argv);
     gCanvas.CreateFrameBuffer(width, height);
 
-    if (test_line_mode == true || test_triangle_mode == true)
+    if (test_line_mode == true || test_triangle_mode == true
+                               || test_rasterize_triangle_mode == true )
 	{
 
         if (test_line_mode == true)
@@ -139,6 +158,9 @@ int main (int argc, char *argv[])
 
         if (test_triangle_mode == true)
             test_triangle_lines();
+
+        if (test_rasterize_triangle_mode == true)
+            test_triangle_rasterize();
     }
 
     GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);

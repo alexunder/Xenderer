@@ -33,6 +33,8 @@ public:
 	void DrawLineWithBresenham(const Color &color, int x1, int y1, int x2, int y2);
 	//void DrawCircle()
 	void DrawLineWithDDA(const Color &color, int x1, int y1, int x2, int y2);
+    void RasterizeTriangle(const Color &color, int x0, int y0, int x1, int y1,
+                           int x2, int y2);
 };
 
 #endif

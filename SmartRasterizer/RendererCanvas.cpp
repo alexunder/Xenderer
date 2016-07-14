@@ -4,6 +4,7 @@
  */
 
 #include "stdafx.h"
+#include <algorithm>
 #include <cstring>
 #include <cmath>
 #include "RendererCanvas.h"
@@ -344,4 +345,55 @@ void RendererCanvas::DrawLineWithDDA(const Color &color, int x1, int y1, int x2,
 		y += yIncrement;
 		SetPixel(ROUND(x), ROUND(y), color);
 	}
+}
+
+void RendererCanvas::RasterizeTriangle(const Color &color, int x0, int y0,
+                                        int x1, int y1, int x2, int y2)
+{
+    //Firstly build the bounding box
+    int xMin = std::min(x0, std::min(x1, x2));
+    int xMax = std::max(x0, std::max(x1, x2));
+    int yMin = std::min(y0, std::min(y1, y2));
+    int yMax = std::max(y0, std::max(y1, y2));
+
+    // Triangle setup.
+    // Compute the edge equation coefficients.
+    float edge_a_0 = -(y1 - y0);
+    float edge_a_1 = -(y2 - y1);
+    float edge_a_2 = -(y0 - y2);
+ 
+    float edge_b_0 =   x1 - x0;
+    float edge_b_1 =   x2 - x1;
+    float edge_b_2 =   x0 - x2;
+
+    float edge_c_0 = edge_a_0 * -x0 + edge_b_0 * -y0;
+    float edge_c_1 = edge_a_1 * -x1 + edge_b_1 * -y1;
+    float edge_c_2 = edge_a_2 * -x2 + edge_b_2 * -y2;
+
+    // Triangle area and inverse area
+    float area = 0.5f * ((x1 - x0) * (y2 - y0) - (y1 - y0) * (x2 - x0));
+    //float inv2Area = 1.f / (2.f * area);
+
+    // Check the triangle is backfacing.
+    if (area <= 0.)
+        return;
+
+    // Loop over the bounding box of the pixels that the triangle possibly
+    // covers.
+    int py;
+    int px;
+
+    for (int py = yMin; py < yMax; ++py) {
+        for (int px = xMin; px < xMax; ++px) {
+            float e0 = edge_a_0 * px + edge_b_0 * py + edge_c_0;
+            float e1 = edge_a_1 * px + edge_b_1 * py + edge_c_1;
+            float e2 = edge_a_2 * px + edge_b_2 * py + edge_c_2;
+
+            //Check the sample is outside the triangle
+            if (e0 <= 0.f || e1 <= 0.f || e2 <= 0.f)
+                continue;
+
+            SetPixel(px, py, color);
+        }
+    }
 }
