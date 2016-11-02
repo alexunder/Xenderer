@@ -20,8 +20,7 @@ bool test_rasterize_triangle_mode = false;
 RendererCanvas gCanvas;
 
 gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event, 
-                                                      gpointer data)
-{
+                          gpointer data) {
 	cairo_t *cr = gdk_cairo_create(widget->window);
 	GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(
                         (const unsigned char*)gCanvas.getframeBuffer(), 
@@ -35,35 +34,37 @@ gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event,
 	return FALSE;
 }
 
-void parseArgs(int argc, char **argv)
-{
-    for (int i = 1; i < argc; i++)
-    {
-        if (!strcmp(argv[i], "-input"))
-        {
+void UiPrepare() {
+    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
+    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
+    gtk_widget_set_size_request(window, width, height);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
+    g_signal_connect(window, "expose-event", G_CALLBACK(on_expose_event), NULL);
+    gtk_widget_set_app_paintable(window, TRUE);
+    gtk_widget_show_all(window);
+    gtk_main();
+}
+
+void parseArgs(int argc, char **argv) {
+    for (int i = 1; i < argc; i++) {
+        if (!strcmp(argv[i], "-input")) {
             i++;
             assert (i < argc);
             input_file = argv[i];
-        }
-        else if (!strcmp(argv[i], "-size"))
-        {
+        } else if (!strcmp(argv[i], "-size")) {
             i++;
             assert (i < argc);
             width = atoi(argv[i]);
             i++;
             assert (i < argc);
             height = atoi(argv[i]);
-        }
-        else if (!strcmp(argv[i], "-testline"))
-        {
+        } else if (!strcmp(argv[i], "-testline")) {
             test_line_mode = true;
-        }
-        else if (!strcmp(argv[i], "-triangle"))
-        {
+        } else if (!strcmp(argv[i], "-triangle")) {
             test_triangle_mode = true;
-        }
-        else if (!strcmp(argv[i], "-rastertriangle"))
-        {
+        } else if (!strcmp(argv[i], "-rastertriangle")) {
             test_rasterize_triangle_mode = true; 
         }
     }
@@ -163,16 +164,7 @@ int main (int argc, char *argv[])
             test_triangle_rasterize();
     }
 
-    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
-    gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
-    gtk_widget_set_size_request(window, width, height);
-    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-
-    g_signal_connect(window, "expose-event", G_CALLBACK(on_expose_event), NULL);
-    gtk_widget_set_app_paintable(window, TRUE);
-    gtk_widget_show_all(window);
-    gtk_main();
+    UiPrepare();
 
     if (pMesh != NULL)
         delete pMesh;
