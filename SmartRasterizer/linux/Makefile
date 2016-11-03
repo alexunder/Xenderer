@@ -3,6 +3,7 @@ SRCDIR=..
 
 CC = g++
 SRC = main.cpp \
+      linux_gtk_layer.cpp \
       $(SRCDIR)/math/Matrix2f.cpp \
       $(SRCDIR)/math/Matrix3f.cpp \
       $(SRCDIR)/math/Matrix4f.cpp \
