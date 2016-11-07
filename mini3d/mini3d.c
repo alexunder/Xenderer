@@ -751,7 +751,7 @@ void screen_update(void);							// 显示 FrameBuffer
 
 gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event,
                           gpointer data) {
-    printf("on expose event.");
+    printf("on expose event.\n");
 	cairo_t *cr = gdk_cairo_create(widget->window);
     GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(screen_fb, 
 		GDK_COLORSPACE_RGB, TRUE, 8, screen_w, screen_h,
@@ -888,6 +888,38 @@ void init_texture(device_t *device) {
 	device_set_texture(device, texture, 256 * 4, 256, 256);
 }
 
+void debug_frameBuffer(char * FileName, int width, int height, unsigned char * buffer) {
+    if (buffer == NULL || FileName == NULL)
+        return;
+
+    char *ext = &FileName[strlen(FileName)-4];
+    assert(!strcmp(ext,".ppm"));
+    FILE *file = fopen(FileName, "w");
+    // misc header information
+    assert(file != NULL);
+    fprintf (file, "P6\n");
+    fprintf (file, "# Creator: debug\n");
+    fprintf (file, "%d %d\n", width, height);
+    fprintf (file, "255\n");
+
+    int y;
+    int x;
+    for (y = height - 1; y >= 0; y--) {
+        for (x = 0; x < width; x++) {
+            unsigned int value = buffer[y*width + x];
+            char a = (char)((0xff000000&value) >> 24);
+            char r = (char)((0x00ff0000&value) >> 16);
+            char g = (char)((0x0000ff00&value) >> 8);
+            char b = (char)((0x000000ff&value));
+            fputc(r, file);
+            fputc(g, file);
+            fputc(b, file);
+        }
+    }
+
+    fclose(file);
+}
+
 int main(int argc, char *argv[]) {
 	device_t device;
 	int states[] = { RENDER_STATE_TEXTURE, RENDER_STATE_COLOR, RENDER_STATE_WIREFRAME };
@@ -900,7 +932,7 @@ int main(int argc, char *argv[]) {
 	if (screen_init(argc, argv, 800, 600, title)) 
 		return -1;
 
-	device_init(&device, 800, 600, screen_fb);
+    device_init(&device, 800, 600, screen_fb);
 	camera_at_zero(&device, 3, 0, 0);
 
 	init_texture(&device);
@@ -910,6 +942,7 @@ int main(int argc, char *argv[]) {
 	device_clear(&device, 1);
 	camera_at_zero(&device, pos, 0, 0);
 	draw_box(&device, alpha);
+    debug_frameBuffer("buffer.ppm", screen_w, screen_h, screen_fb);
 //		screen_update();
 //		Sleep(1);
 //	}

@@ -16,6 +16,8 @@ int    height = 800;
 bool test_line_mode = false;
 bool test_triangle_mode = false;
 bool test_rasterize_triangle_mode = false;
+bool debug_dump = false;
+char * debugDumpFile = NULL;
 RendererCanvas gCanvas;
 
 void parseArgs(int argc, char **argv) {
@@ -37,6 +39,10 @@ void parseArgs(int argc, char **argv) {
             test_triangle_mode = true;
         } else if (!strcmp(argv[i], "-rastertriangle")) {
             test_rasterize_triangle_mode = true; 
+        } else if (!strcmp(argv[i], "-debug")) {
+            i++;
+            assert (i < argc);
+            debugDumpFile = argv[i];
         }
     }
 }
@@ -97,6 +103,39 @@ void test_triangle_rasterize() {
     gCanvas.RasterizeTriangle(color, x0, y0, x1, y1, x2, y2);
 }
 
+void debug_frameBuffer(char * FileName, int width, int height, unsigned int * buffer) {
+    printf("debug_frameBuffer\n");
+    if (buffer == NULL || FileName == NULL)
+        return;
+
+    char *ext = &FileName[strlen(FileName)-4];
+    assert(!strcmp(ext,".ppm"));
+    FILE *file = fopen(FileName, "w");
+    // misc header information
+    assert(file != NULL);
+    fprintf (file, "P6\n");
+    fprintf (file, "# Creator: debug\n");
+    fprintf (file, "%d %d\n", width, height);
+    fprintf (file, "255\n");
+
+    int y;
+    int x;
+    for (y = 0; y <= height; y++) {
+        for (x = 0; x < width; x++) {
+            unsigned int value = buffer[y*width + x];
+            char a = (char)((0xff000000&value) >> 24);
+            char r = (char)((0x00ff0000&value) >> 16);
+            char g = (char)((0x0000ff00&value) >> 8);
+            char b = (char)((0x000000ff&value));
+            fputc(r, file);
+            fputc(g, file);
+            fputc(b, file);
+        }
+    }
+
+    fclose(file);
+}
+
 
 int main (int argc, char *argv[]) {
     parseArgs(argc, argv);
@@ -128,6 +167,12 @@ int main (int argc, char *argv[]) {
 
         if (test_rasterize_triangle_mode == true)
             test_triangle_rasterize();
+    }
+
+    if (debugDumpFile != NULL) {
+        debug_frameBuffer(debugDumpFile, pContext->getWidth(), 
+            pContext->getHeight(),
+            pContext->getCanvas()->getframeBuffer());       
     }
 
     pContext->Prepare();

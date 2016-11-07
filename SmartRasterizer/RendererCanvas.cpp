@@ -49,7 +49,7 @@ void RendererCanvas::SetPixel(int x, int y, const Color &color)
 	if(x >= mWidth || y >= mHeight)
 		return;
 
-	mFrameBuffer[y * mWidth + x] = color.ToUInt32();
+	mFrameBuffer[y * mWidth + x] = color.ToUInt32(true);
 }
 
 void RendererCanvas::SetPixel(float x, float y, const Color &color)

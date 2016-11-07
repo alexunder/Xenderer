@@ -14,14 +14,16 @@ Color::Color(float r, float g, float b, float a)
 	A = a;
 }
 
-unsigned int Color::ToUInt32() const
+unsigned int Color::ToUInt32(bool isAlphaHead) const
 {
 	unsigned int r = (unsigned int)(R * 255.0f);
 	unsigned int g = (unsigned int)(G * 255.0f);
 	unsigned int b = (unsigned int)(B * 255.0f);
 	unsigned int a = (unsigned int)(A * 255.0f);
-
-	return (a << 24) | (r << 16) | (g << 8) | b;
+    if (isAlphaHead)
+	    return (a << 24) | (r << 16) | (g << 8) | b;
+    else
+	    return (r << 24) | (g << 16) | (b << 8) | a;
 }
 
 Color
