@@ -6,14 +6,6 @@
 #include "MeshObjectModel.h"
 #include "stdafx.h"
 
-Point Transfer_From_Matrix4f(Matrix4f mt, Point ori)
-{
-	Vector4f ret;
-	Vector4f original = Vector4f(ori);
-	ret = mt * original;
-	return Point(ret.x(), ret.y(), ret.z());
-}
-
 MeshObjectModel::MeshObjectModel(int num_mesh, int num_vertices,
 						const int * vi, const int * ni, const int * uvi,
 						const Point * point, const Normal * normal,
@@ -47,12 +39,4 @@ MeshObjectModel::MeshObjectModel(int num_mesh, int num_vertices,
     }
     else 
         m_pNormals = NULL;
-}
-
-void MeshObjectModel::Transform(Matrix4f mt)
-{
-    int i;
-
-    for (int i = 0; i < m_num_vertices; ++i)
-        m_pVertices[i] = Transfer_From_Matrix4f(mt, m_pVertices[i]);
 }

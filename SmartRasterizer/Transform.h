@@ -15,6 +15,10 @@ public:
     Transform(int w, int h);
 
     void init(int width, int height);
+    void setWorld(Matrix4f &w)
+    {
+        mWorld = w;
+    }
     void update();
     void apply(Vector4f &x, Vector4f &y);
     int check_cvv(Vector4f &v);

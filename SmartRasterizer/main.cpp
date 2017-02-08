@@ -104,7 +104,6 @@ void test_triangle_rasterize() {
 }
 
 void debug_frameBuffer(char * FileName, int width, int height, unsigned int * buffer) {
-    printf("debug_frameBuffer\n");
     if (buffer == NULL || FileName == NULL)
         return;
 

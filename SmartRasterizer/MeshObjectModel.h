@@ -50,7 +50,45 @@ public:
             delete [] m_UVIndex; 
     }
 
-	void Transform(Matrix4f mt);
+    int getNumVertices()
+    {
+        return m_num_vertices;
+    }
+
+    int getNumTriangles()
+    {
+        return m_num_triangles;
+    }
+
+    Point * getVertices() const
+    {
+        return m_pVertices;
+    }
+
+    int * getVertexIndex() const
+    {
+        return m_VertexIndex;
+    }
+    
+    Normal * getNormals() const
+    {
+        return m_pVertices;
+    }
+
+    int * getNormalIndex() const
+    {
+        return m_NormalIndex;
+    }
+    
+    float * getUVs() const
+    {
+        return m_pUVs;
+    }
+
+    int * getUVIndex() const
+    {
+        return m_UVIndex;
+    }
 private:
 	int m_num_triangles;
 	int m_num_vertices;
