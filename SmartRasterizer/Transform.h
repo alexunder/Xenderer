@@ -13,6 +13,9 @@ class Transform
 {
 public:
     Transform(int w, int h);
+    Transform()
+    {
+    }
 
     void init(int width, int height);
     void setWorld(Matrix4f &w)

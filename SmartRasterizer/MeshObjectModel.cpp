@@ -14,14 +14,29 @@ MeshObjectModel::MeshObjectModel(int num_mesh, int num_vertices,
     m_num_triangles = num_mesh;
     m_num_vertices = num_vertices;
 
-    m_VertexIndex = new int[3 * m_num_triangles];
-    memcpy(m_VertexIndex, vi, 3 * m_num_triangles * sizeof(int));
+    if (vi)
+    {
+        m_VertexIndex = new int[3 * m_num_triangles];
+        memcpy(m_VertexIndex, vi, 3 * m_num_triangles * sizeof(int));
+    }
+    else
+        m_VertexIndex = NULL;
 
-    m_NormalIndex = new int[3 * m_num_triangles];
-    memcpy(m_NormalIndex, ni, 3 * m_num_triangles * sizeof(int));
+    if (ni)
+    {
+        m_NormalIndex = new int[3 * m_num_triangles];
+        memcpy(m_NormalIndex, ni, 3 * m_num_triangles * sizeof(int));
+    }
+    else
+        m_NormalIndex = NULL;
 
-    m_UVIndex = new int[3 * m_num_triangles];
-    memcpy(m_UVIndex, uvi, 3 * m_num_triangles * sizeof(int));
+    if (uvi)
+    {
+        m_UVIndex = new int[3 * m_num_triangles];
+        memcpy(m_UVIndex, uvi, 3 * m_num_triangles * sizeof(int));
+    }
+    else
+        m_UVIndex = NULL;
 
     if (uv) {
         m_pUVs = new float[2 * m_num_vertices];

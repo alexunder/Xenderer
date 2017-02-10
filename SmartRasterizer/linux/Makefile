@@ -16,6 +16,7 @@ SRC = linux_gtk_layer.cpp \
 	  $(SRCDIR)/stdafx.cpp \
 	  $(SRCDIR)/MeshObjectModel.cpp \
 	  $(SRCDIR)/ModelLoader.cpp \
+	  $(SRCDIR)/RenderDevice.cpp \
 	  $(SRCDIR)/Transform.cpp
 
 TARGET = SmartRasterizer

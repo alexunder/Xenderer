@@ -73,21 +73,32 @@ bool loadObjModel(const char * path, MeshObjectModel ** obj)
                                      &vertexIndex[0], &uvIndex[0], &normalIndex[0],
                                      &vertexIndex[1], &uvIndex[1], &normalIndex[1],
                                      &vertexIndex[2], &uvIndex[2], &normalIndex[2]);
-			if (matches != 9) {
+			/*
+            if (matches != 9) {
 				printf("File can't be read by our simple parser \
                          :-( Try exporting with other options\n");
 				return false;
-			}
+			}*/
+
 			number_mesh++;
-			vertexIndices.push_back(vertexIndex[0]);
+
+            vertexIndices.push_back(vertexIndex[0]);
 			vertexIndices.push_back(vertexIndex[1]);
 			vertexIndices.push_back(vertexIndex[2]);
-			uvIndices.push_back(uvIndex[0]);
-			uvIndices.push_back(uvIndex[1]);
-			uvIndices.push_back(uvIndex[2]);
-			normalIndices.push_back(normalIndex[0]);
-			normalIndices.push_back(normalIndex[1]);
-			normalIndices.push_back(normalIndex[2]);
+
+            if (matches > 3)
+            {
+                uvIndices.push_back(uvIndex[0]);
+			    uvIndices.push_back(uvIndex[1]);
+			    uvIndices.push_back(uvIndex[2]);
+
+                if (matches > 6)
+                {
+                    normalIndices.push_back(normalIndex[0]);
+			        normalIndices.push_back(normalIndex[1]);
+			        normalIndices.push_back(normalIndex[2]);
+                }
+            }
 		}
 		else
 		{
@@ -104,37 +115,60 @@ bool loadObjModel(const char * path, MeshObjectModel ** obj)
 	vector<Vector2f> mv_intermediate_buffer;
 
 	int number_vertices = point_buffer.size();
+    int * vertex_index = NULL;
+    int * normal_index = NULL;
+    int * uv_index = NULL;
 
-	int * vertex_index = new int[3 * number_mesh];
-	memcpy(vertex_index, &vertexIndices[0], 3 * number_mesh * sizeof(int));
+    if (vertexIndices.size() > 0)
+    {
+        vertex_index = new int[3 * number_mesh];
+        memcpy(vertex_index, &vertexIndices[0], 3 * number_mesh * sizeof(int));
+    }
 
-	int * normal_index = new int[3 * number_mesh];
-	memcpy(normal_index, &normalIndices[0], 3 * number_mesh * sizeof(int));
+    if (normalIndices.size() > 0)
+    {
+        normal_index = new int[3 * number_mesh];
+        memcpy(normal_index, &normalIndices[0], 3 * number_mesh * sizeof(int));
+    }
 
-	int * uv_index = new int[3 * number_mesh];
-	memcpy(uv_index, &uvIndices[0], 3 * number_mesh * sizeof(int));
-
+    if (uvIndices.size() > 0)
+    {
+        uv_index = new int[3 * number_mesh];
+        memcpy(uv_index, &uvIndices[0], 3 * number_mesh * sizeof(int));
+    }
 	/*
 	need to fill contents in these buffers
 	*/
+    Point * vertexBuffer = NULL;
+    Normal * normalBuffer = NULL;
+    float * uvBuffer = NULL;
 
-	Point * vertexBuffer = new Point[point_buffer.size()];
-	memcpy(vertexBuffer, &point_buffer[0], point_buffer.size() * sizeof(Point));
+    if (point_buffer.size() > 0)
+    {
+        vertexBuffer = new Point[point_buffer.size()];
+        memcpy(vertexBuffer, &point_buffer[0], point_buffer.size() * sizeof(Point));
+    }
 
-	Normal * normalBuffer = new Normal[normal_buffer.size()];
-	memcpy(normalBuffer, &normal_buffer[0], point_buffer.size() * sizeof(Normal));
+    if (normal_buffer.size() > 0)
+    {
+        normalBuffer = new Normal[normal_buffer.size()];
+        memcpy(normalBuffer, &normal_buffer[0], normal_buffer.size() * sizeof(Normal));
+    }
 
-	float * uvBuffer = new float[mv_buffer.size() * 2];
-	int i;
+    if (mv_buffer.size() > 0)
+    {
+        uvBuffer = new float[mv_buffer.size() * 2];
+        int i;
 
-	for (i = 0; i < mv_buffer.size(); i++)
-	{
-		uvBuffer[i * 2] = mv_buffer[i].x();
-		uvBuffer[i * 2 + 1] = mv_buffer[i].y();
-	}
+        for (i = 0; i < mv_buffer.size(); i++)
+        {
+            uvBuffer[i * 2] = mv_buffer[i].x();
+            uvBuffer[i * 2 + 1] = mv_buffer[i].y();
+        }
+    }
 
 	int count = 0;
-	
+
 	*obj = new MeshObjectModel(number_mesh, number_vertices,
 		vertex_index, normal_index, uv_index, 
 		vertexBuffer, normalBuffer, uvBuffer);

@@ -16,12 +16,6 @@
 
 using namespace std;
 
-typedef struct _Triangle {
-    Vertex p1;
-    Vertex p2;
-    Vertex p3;
-} Triangle;
-
 class MeshObjectModel
 {
 public:
