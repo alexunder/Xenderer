@@ -21,6 +21,7 @@ public:
     void DrawBox();
 private:
     void init(int width, int height);
+    void DestroyBuffer();
     void DrawPrimitive(Vertex *p1, Vertex *p2, Vertex *p3);
     void DrawPixel(int x, int y, const Color &c);
 private:

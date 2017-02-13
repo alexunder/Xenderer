@@ -13,7 +13,32 @@ RenderDevice::RenderDevice(int width, int height)
 
 void RenderDevice::init(int width, int height)
 {
-    
+    DestroyBuffer();
+    int BufferSize = width*height*4;
+    mFrameBuffer = (unsigned int *)malloc(BufferSize);
+    memset(mFrameBuffer, 0, BufferSize);
+    mZBuffer = (unsigned int *)malloc(BufferSize);
+    memset(mZBuffer, 0, BufferSize);
+    mWidth = width;
+    mHeight = height;
+    mTransform.init(width, height);
+    mBackgroundColor.setColor(0xff, 0xff, 0xff); 
+    mForegroundColor.setColor(0, 0, 0);
+}
+
+void RenderDevice::DestroyBuffer()
+{
+    if (mFrameBuffer != NULL)
+    {
+        free(mFrameBuffer);
+        mFrameBuffer = NULL;
+    }
+
+    if (mZBuffer != NULL)
+    {
+        free(mZBuffer);
+        mZBuffer= NULL;
+    }
 }
 
 void RenderDevice::DrawFragment(MeshObjectModel * pObj)
