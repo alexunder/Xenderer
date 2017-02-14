@@ -12,4 +12,18 @@ typedef struct _vertex {
     Normal normal;
 } Vertex;
 
+typedef struct _simple_vertex
+{
+    float x;
+    float y;
+    float z;
+    float w;
+    float u;
+    float v;
+    float r;
+    float g;
+    float b;
+    float rhw;
+} vertex_t;
+
 #endif
