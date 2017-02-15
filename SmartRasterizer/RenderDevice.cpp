@@ -6,6 +6,11 @@
 #include "RenderDevice.h"
 #include "MeshObjectModel.h"
 
+int CMID(int x, int min, int max)
+{ 
+    return (x < min)? min : ((x > max)? max : x);
+}
+
 RenderDevice::RenderDevice(int width, int height)
 {
     init(width, height);
@@ -21,6 +26,10 @@ void RenderDevice::init(int width, int height)
     memset(mZBuffer, 0, BufferSize);
     mWidth = width;
     mHeight = height;
+    mTextureWidth = 2;
+    mTextureHeight = 2;
+    mMaxU = 1.0;
+    mMaxV = 1.0;
     mTransform.init(width, height);
     mBackgroundColor.setColor(0xff, 0xff, 0xff); 
     mForegroundColor.setColor(0, 0, 0);
@@ -95,4 +104,31 @@ void RenderDevice::DrawPrimitive(vertex_t *p1, vertex_t *p2, vertex_t *p3)
 void RenderDevice::DrawPixel(int x, int y, const Color &c)
 {
 
+}
+
+void RenderDevice::SetTexture(void *bits, int granularity, int w, int h)
+{
+    unsigned char *ptr = (unsigned char*)bits;
+    assert(w <= 1024 && h <= 1024);
+    mTexture = ptr;
+    mTextureWidth = w;
+    mTextureHeight = h;
+    mMaxU = (float)(w - 1);
+    mMaxV = (float)(h - 1);
+    mGranularity = granularity;
+}
+
+unsigned int RenderDevice::TextureRead(float u, float v)
+{
+    if (mTexture == NULL)
+        return 0;
+    int x;
+    int y;
+    u = u * mMaxU;
+    v = v * mMaxV;
+    x = (int)(u + 0.5f);
+    y = (int)(v + 0.5f);
+    x = CMID(x, 0, mTextureWidth - 1);
+    y = CMID(y, 0, mTextureHeight - 1);
+    return mTexture[y*mTextureWidth*mGranularity + x];
 }

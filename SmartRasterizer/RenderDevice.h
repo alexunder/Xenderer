@@ -17,6 +17,8 @@ public:
     RenderDevice(int width, int height);
     ~RenderDevice();
 
+    void SetTexture(void *bits, long pitch, int w, int h);
+    unsigned int TextureRead(float u, float v);
     void DrawFragment(MeshObjectModel * pObj);
     void DrawBox();
 private:
@@ -30,8 +32,14 @@ private:
 	unsigned int mHeight;
 	unsigned int * mFrameBuffer;
 	unsigned int * mZBuffer;
+	unsigned char * mTexture;
+    int mTextureWidth;
+    int mTextureHeight;
+    float mMaxU;
+    float mMaxV;
+    int mGranularity;
     Color mBackgroundColor;
     Color mForegroundColor;
 };
 
-#endif 
+#endif
