@@ -5,6 +5,8 @@
 
 #include "RenderDevice.h"
 #include "MeshObjectModel.h"
+#include <stdlib.h>
+#include <string.h>
 
 int CMID(int x, int min, int max)
 { 
@@ -90,26 +92,49 @@ void RenderDevice::DrawPlane(int a, int b, int c, int d)
     vertex_t p2 = mesh[b];
     vertex_t p3 = mesh[c];
     vertex_t p4 = mesh[d];
-    p1.tc.u = 0, p1.tc.v = 0, p2.tc.u = 0, p2.tc.v = 1;
-    p3.tc.u = 1, p3.tc.v = 1, p4.tc.u = 1, p4.tc.v = 0;
+    p1.u = 0, p1.v = 0, p2.u = 0, p2.v = 1;
+    p3.u = 1, p3.v = 1, p4.u = 1, p4.v = 0;
     DrawPrimitive(&p1, &p2, &p3);
     DrawPrimitive(&p3, &p4, &p1);
 }
 
-void RenderDevice::DrawPrimitive(vertex_t *p1, vertex_t *p2, vertex_t *p3)
+void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
 {
+    Vector4f p1(v1->x, v1->y, v1->z, v1->w);
+    Vector4f p2(v2->x, v2->y, v2->z, v2->w);
+    Vector4f p3(v3->x, v3->y, v3->z, v3->w);
 
+    Vector4f c1;
+    Vector4f c2;
+    Vector4f c3;
+
+    mTransform.apply(p1, c1);
+    mTransform.apply(p2, c2);
+    mTransform.apply(p3, c3);
+
+    if (mTransform.check_cvv(c1) != 0) return;
+    if (mTransform.check_cvv(c2) != 0) return;
+    if (mTransform.check_cvv(c3) != 0) return;
+
+    mTransform.homogenize(c1, p1);
+    mTransform.homogenize(c2, p2);
+    mTransform.homogenize(c3, p3);
 }
 
 void RenderDevice::DrawPixel(int x, int y, const Color &c)
 {
+    if(x >= mWidth || y >= mHeight)
+        return;
 
+    mFrameBuffer[y * mWidth + x] = c.ToUInt32(true);
 }
 
 void RenderDevice::SetTexture(void *bits, int granularity, int w, int h)
 {
+    if (w > 1024 || h > 1024)
+        return;
+
     unsigned char *ptr = (unsigned char*)bits;
-    assert(w <= 1024 && h <= 1024);
     mTexture = ptr;
     mTextureWidth = w;
     mTextureHeight = h;
@@ -131,4 +156,14 @@ unsigned int RenderDevice::TextureRead(float u, float v)
     x = CMID(x, 0, mTextureWidth - 1);
     y = CMID(y, 0, mTextureHeight - 1);
     return mTexture[y*mTextureWidth*mGranularity + x];
+}
+
+
+void RenderDevice::initCamera(float x, float y, float z)
+{
+    Vector3f eye(x, y, z);
+    Vector3f at(0.0, 0.0, 0.0);
+    Vector3f up(0, 0, 1);
+    mTransform.setCamera(Matrix4f::lookAt(eye, at, up));
+    mTransform.update();
 }

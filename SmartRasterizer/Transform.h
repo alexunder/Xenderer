@@ -22,6 +22,10 @@ public:
     {
         mWorld = w;
     }
+    void setCamera(Matrix4f c)
+    {
+        mCam = c;
+    }
     void update();
     void apply(Vector4f &x, Vector4f &y);
     int check_cvv(Vector4f &v);

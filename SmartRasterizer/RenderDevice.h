@@ -17,14 +17,16 @@ public:
     RenderDevice(int width, int height);
     ~RenderDevice();
 
-    void SetTexture(void *bits, long pitch, int w, int h);
+    void SetTexture(void *bits, int granularity, int w, int h);
     unsigned int TextureRead(float u, float v);
     void DrawFragment(MeshObjectModel * pObj);
-    void DrawBox();
+    void DrawBox(float theta);
+    void DrawPlane(int a, int b, int c, int d);
+    void initCamera(float x, float y, float z);
 private:
     void init(int width, int height);
     void DestroyBuffer();
-    void DrawPrimitive(Vertex *p1, Vertex *p2, Vertex *p3);
+    void DrawPrimitive(vertex_t *p1, vertex_t *p2, vertex_t *p3);
     void DrawPixel(int x, int y, const Color &c);
 private:
     Transform mTransform;
