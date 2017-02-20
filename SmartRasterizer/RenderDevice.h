@@ -11,10 +11,18 @@
 #include "Vertex.h"
 #include "MeshObjectModel.h"
 
+enum RenderState
+{
+    RENDERING_WIREFRAME = 1,
+    RENDERING_TEXTURE   = 2,
+    RENDERING_COLOR     = 4
+};
+
 class RenderDevice
 {
 public:
     RenderDevice(int width, int height);
+    RenderDevice();
     ~RenderDevice();
 
     void SetTexture(void *bits, int granularity, int w, int h);
@@ -42,6 +50,7 @@ private:
     int mGranularity;
     Color mBackgroundColor;
     Color mForegroundColor;
+    int mRenderState;
 };
 
 #endif
