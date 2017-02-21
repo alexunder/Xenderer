@@ -41,7 +41,7 @@ private:
 	unsigned int mWidth;
 	unsigned int mHeight;
 	unsigned int * mFrameBuffer;
-	unsigned int * mZBuffer;
+	float * mZBuffer;
 	unsigned char * mTexture;
     int mTextureWidth;
     int mTextureHeight;

@@ -39,7 +39,7 @@ void RenderDevice::init(int width, int height)
     int BufferSize = width*height*4;
     mFrameBuffer = (unsigned int *)malloc(BufferSize);
     memset(mFrameBuffer, 0, BufferSize);
-    mZBuffer = (unsigned int *)malloc(BufferSize);
+    mZBuffer = (float *)malloc(width*height*sizeof(float));
     memset(mZBuffer, 0, BufferSize);
     mWidth = width;
     mHeight = height;
@@ -195,7 +195,30 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
 
             // Interpolate z
             float z = (wt0 * p1.z() + wt1 * p2.z() + wt2 * p3.z());
+            float zrhw = 1.0f / z;
 
+            if (zrhw >= mZbuffer[py*mWidth + px])
+            {
+                mZbuffer[py*mWidth + px] = z;
+
+                if (mRenderState & RenderState::RENDERING_COLOR)
+                {
+                    float r = wt0 * v1->r + wt1 * v2->r + wt2 * v3->r;
+                    float g = wt0 * v1->g + wt1 * v2->g + wt2 * v3->g;
+                    float b = wt0 * v1->b + wt1 * v2->b + wt2 * v3->b;
+                    int R = (int)(r * 255.0f);
+                    int G = (int)(g * 255.0f);
+                    int B = (int)(b * 255.0f);
+                    R = CMID(R, 0, 255);
+                    G = CMID(G, 0, 255);
+                    B = CMID(B, 0, 255);
+                    mFrameBuffer[py*mWidth + px] = (R << 16) | (G << 8) | (B);
+                }
+
+                if (mRenderState & RenderState::RENDERING_TEXTURE)
+                {
+                }
+            }
         }
     }
 
