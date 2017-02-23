@@ -30,6 +30,7 @@ public:
     void apply(Vector4f &x, Vector4f &y);
     int check_cvv(Vector4f &v);
     void homogenize(Vector4f &x, Vector4f &y);
+    void DebugDump();
 private:
     Matrix4f mWorld;
     Matrix4f mCam;

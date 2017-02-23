@@ -57,3 +57,10 @@ void Transform::homogenize(Vector4f &x, Vector4f &y)
     y.z() = x.z() * rhw;
     y.w() = 1.0f;
 }
+
+void Transform::DebugDump()
+{
+    cout<<"Transform Information:"<<endl;
+    count<<"Width="<<mWidth<<"Height="<<mHeight<<endl;
+    cout<<"The World matrix is"<<endl;
+}

@@ -12,11 +12,11 @@ gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event,
     UIContext * pCurrentContext = (UIContext *)data;
 	cairo_t *cr = gdk_cairo_create(widget->window);
 	GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(
-        (const unsigned char*)pCurrentContext->getCanvas()->getframeBuffer(), 
+        (const unsigned char*)pCurrentContext->getFB(),
 		GDK_COLORSPACE_RGB, TRUE, 8,
-        pCurrentContext->getWidth(), 
-        pCurrentContext->getHeight(), 
-        pCurrentContext->getWidth()*4, 
+        pCurrentContext->getWidth(),
+        pCurrentContext->getHeight(),
+        pCurrentContext->getWidth()*4,
         NULL, NULL);
 	gdk_cairo_set_source_pixbuf(cr, pixframebuffer, 0, 0);
 	cairo_paint(cr);

@@ -9,7 +9,7 @@
 #include <string.h>
 
 int CMID(int x, int min, int max)
-{ 
+{
     return (x < min)? min : ((x > max)? max : x);
 }
 
@@ -48,9 +48,9 @@ void RenderDevice::init(int width, int height)
     mMaxU = 1.0;
     mMaxV = 1.0;
     mTransform.init(width, height);
-    mBackgroundColor.setColor(0xff, 0xff, 0xff); 
+    mBackgroundColor.setColor(0xff, 0xff, 0xff);
     mForegroundColor.setColor(0, 0, 0);
-    mRenderState = RenderState::RENDERING_WIREFRAME;
+    mRenderState = RENDERING_WIREFRAME;
 }
 
 void RenderDevice::DestroyBuffer()
@@ -73,7 +73,7 @@ void RenderDevice::DrawFragment(MeshObjectModel * pObj)
 
 }
 
-vertex_t mesh[8] = 
+vertex_t mesh[8] =
 {
     { 1, -1,  1, 1 , 0, 0 , 1.0, 0.2, 0.2, 1},
     {-1, -1,  1, 1 , 0, 1 , 0.2, 1.0, 0.2, 1},
@@ -136,8 +136,7 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
     mTransform.homogenize(c2, p2);
     mTransform.homogenize(c3, p3);
 
-    if (mRenderState & (RenderState::RENDERING_TEXTURE |
-                        RenderState::RENDERING_COLOR))
+    if (mRenderState & (RENDERING_TEXTURE | RENDERING_COLOR))
     {
         int x0 = p1.x();
         int x1 = p2.x();
@@ -197,11 +196,11 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
             float z = (wt0 * p1.z() + wt1 * p2.z() + wt2 * p3.z());
             float zrhw = 1.0f / z;
 
-            if (zrhw >= mZbuffer[py*mWidth + px])
+            if (zrhw >= mZBuffer[py*mWidth + px])
             {
-                mZbuffer[py*mWidth + px] = z;
+                mZBuffer[py*mWidth + px] = z;
 
-                if (mRenderState & RenderState::RENDERING_COLOR)
+                if (mRenderState & RENDERING_COLOR)
                 {
                     float r = wt0 * v1->r + wt1 * v2->r + wt2 * v3->r;
                     float g = wt0 * v1->g + wt1 * v2->g + wt2 * v3->g;
@@ -215,15 +214,22 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
                     mFrameBuffer[py*mWidth + px] = (R << 16) | (G << 8) | (B);
                 }
 
-                if (mRenderState & RenderState::RENDERING_TEXTURE)
+                if (mRenderState & RENDERING_TEXTURE)
                 {
+                    float u = wt0 * v1->u + wt1 * v2->u + wt2 * v3->u;
+                    float v = wt0 * v1->v + wt1 * v2->v + wt2 * v3->v;
+                    unsigned int cc = TextureRead(u, v);
+                    mFrameBuffer[py*mWidth + px] = cc;
                 }
             }
         }
     }
 
-    if (mRenderState & RenderState::RENDERING_WIREFRAME)
+    if (mRenderState & RENDERING_WIREFRAME)
     {
+        DrawLine(p1.x(), p1.y(), p2.x(), p2.y());
+        DrawLine(p1.x(), p1.y(), p3.x(), p3.y());
+        DrawLine(p3.x(), p3.y(), p2.x(), p2.y());
     }
 }
 
@@ -247,7 +253,7 @@ void RenderDevice::SetTexture(void *bits, int granularity, int w, int h)
     mMaxU = (float)(w - 1);
     mMaxV = (float)(h - 1);
     mGranularity = granularity;
-    mRenderState = RenderState::RENDERING_TEXTURE;
+    mRenderState = RENDERING_TEXTURE;
 }
 
 unsigned int RenderDevice::TextureRead(float u, float v)
@@ -273,4 +279,182 @@ void RenderDevice::initCamera(float x, float y, float z)
     Vector3f up(0, 0, 1);
     mTransform.setCamera(Matrix4f::lookAt(eye, at, up));
     mTransform.update();
+}
+
+void RenderDevice::DrawLine(int x1, int y1, int x2, int y2)
+{
+    DrawLineInner(x1, y1, x2, y2, mForegroundColor);
+}
+
+void RenderDevice::DrawLineInner(int x1, int y1, int x2, int y2, const Color &color)
+{
+    int dx = x2 - x1;
+    int dy = y2 - y1;
+
+    float slop = 0.0;
+    float d;
+    int x;
+    int y;
+
+    if (abs(dx) > abs(dy))
+    {
+        //Based on x
+        slop = (float)dy / (float)dx;
+        y = y1;
+
+        if (dx >= 0 && dy >= 0)
+        {
+            d = slop;
+            // The slop is positive
+            for (x = x1; x <= x2; x++)
+            {
+                DrawPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    y++;
+                    d += slop - 1;
+                }
+            }
+        }
+        else if (dx >= 0 && dy < 0)
+        {
+            d = slop;
+            // The slope is negative
+            for (x = x1; x <= x2; x++)
+            {
+                DrawPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    y--;
+                    d += slop + 1;
+                }
+            }
+
+        }
+        else if (dx < 0 && dy >= 0)
+        {
+            d = -slop;
+            // The slop is negative
+            for (x = x1; x >= x2; x--)
+            {
+                DrawPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    y++;
+                    //d += slop + 1;
+                    d = d - slop -1;
+                }
+            }
+        }
+        else if (dx < 0 && dy < 0)
+        {
+            d = -slop;
+            // The slop is positive
+            for (x = x1; x >= x2; x--)
+            {
+                DrawPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    y--;
+                    d = d - slop + 1;
+                }
+            }
+        }
+    }
+    else
+    {
+        //based on y
+        slop = (float)dx / (float)dy;
+        x = x1;
+        if (dy >= 0 && dx >= 0)
+        {
+            d = slop;
+            // The slop is positive
+            for (y = y1; y <= y2; y++)
+            {
+                DrawPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    x++;
+                    d += slop - 1;
+                }
+            }
+        }
+        else if (dy >= 0 && dx < 0)
+        {
+            d = slop;
+            // The slope is negative
+            for (y = y1; y <= y2; y++)
+            {
+                DrawPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d += slop;
+                }
+                else
+                {
+                    x--;
+                    d += slop + 1;
+                }
+            }
+
+        }
+        else if (dy < 0 && dx >= 0)
+        {
+            d = -slop;
+            // The slop is negative
+            for (y = y1; y >= y2; y--)
+            {
+                DrawPixel(x, y, color);
+                if (d < 0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    x++;
+                    //d += slop + 1;
+                    d = d - slop -1;
+                }
+            }
+        }
+        else if (dy < 0 && dx < 0)
+        {
+            d = -slop;
+            // The slop is positive
+            for (y = y1; y >= y2; y--)
+            {
+                DrawPixel(x, y, color);
+                if (d > -0.5)
+                {
+                    d -= slop;
+                }
+                else
+                {
+                    x--;
+                    d = d - slop + 1;
+                }
+            }
+        }
+    }
 }

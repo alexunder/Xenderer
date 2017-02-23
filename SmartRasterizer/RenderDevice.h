@@ -23,18 +23,28 @@ class RenderDevice
 public:
     RenderDevice(int width, int height);
     RenderDevice();
-    ~RenderDevice();
+
+    ~RenderDevice()
+    {
+        DestroyBuffer();
+    }
 
     void SetTexture(void *bits, int granularity, int w, int h);
     unsigned int TextureRead(float u, float v);
     void DrawFragment(MeshObjectModel * pObj);
     void DrawBox(float theta);
     void DrawPlane(int a, int b, int c, int d);
+    void DrawLine(int x1, int y1, int x2, int y2);
     void initCamera(float x, float y, float z);
+    unsigned int * getFB()
+    {
+        return mFrameBuffer;
+    }
 private:
     void init(int width, int height);
     void DestroyBuffer();
     void DrawPrimitive(vertex_t *p1, vertex_t *p2, vertex_t *p3);
+    void DrawLineInner(int x1, int y1, int x2, int y2, const Color &color);
     void DrawPixel(int x, int y, const Color &c);
 private:
     Transform mTransform;

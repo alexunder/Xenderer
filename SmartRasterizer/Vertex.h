@@ -1,4 +1,3 @@
-
 #ifndef __H_VERTEX
 #define __H_VERTEX
 
