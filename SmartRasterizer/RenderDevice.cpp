@@ -48,6 +48,10 @@ void RenderDevice::init(int width, int height)
     mMaxU = 1.0;
     mMaxV = 1.0;
     mTransform.init(width, height);
+#ifdef __DEBUG
+    cout<<"RenderDevice::init"<<endl;
+    mTransform.DebugDump();
+#endif
     mBackgroundColor.setColor(0xff, 0xff, 0xff);
     mForegroundColor.setColor(0, 0, 0);
     mRenderState = RENDERING_WIREFRAME;
@@ -93,6 +97,10 @@ void RenderDevice::DrawBox(float theta)
     Matrix4f m = Matrix4f::rotation(dir, theta);
     mTransform.setWorld(m);
     mTransform.update();
+#ifdef __DEBUG
+    cout<<"RenderDevice::DrawBox"<<endl;
+    mTransform.DebugDump();
+#endif
     DrawPlane(0, 1, 2, 3);
     DrawPlane(4, 5, 6, 7);
     DrawPlane(0, 4, 5, 1);
@@ -279,6 +287,10 @@ void RenderDevice::initCamera(float x, float y, float z)
     Vector3f up(0, 0, 1);
     mTransform.setCamera(Matrix4f::lookAt(eye, at, up));
     mTransform.update();
+#ifdef __DEBUG
+    cout<<"RenderDevice::initCamera."<<endl;
+    mTransform.DebugDump();
+#endif
 }
 
 void RenderDevice::DrawLine(int x1, int y1, int x2, int y2)

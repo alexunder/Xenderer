@@ -8,9 +8,6 @@
 #include "RendererCanvas.h"
 #include "ModelLoader.h"
 
-#define __DEBUG
-//#define TEST_DDA_LINE
-
 char * input_file = NULL;
 int    width = 800;
 int    height = 600;

@@ -3,6 +3,10 @@
 
 #include <cstdio>
 
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
 class Matrix2f;
 class Matrix3f;
 class Quat4f;
@@ -20,11 +24,11 @@ public:
 		float m10, float m11, float m12, float m13,
 		float m20, float m21, float m22, float m23,
 		float m30, float m31, float m32, float m33 );
-	
+
 	// setColumns = true ==> sets the columns of the matrix to be [v0 v1 v2 v3]
 	// otherwise, sets the rows
 	Matrix4f( const Vector4f& v0, const Vector4f& v1, const Vector4f& v2, const Vector4f& v3, bool setColumns = true );
-	
+
 	Matrix4f( const Matrix4f& rm ); // copy constructor
 	Matrix4f& operator = ( const Matrix4f& rm ); // assignment operator
 	// no destructor necessary
@@ -80,6 +84,7 @@ public:
 	static Matrix4f orthographicProjection( float left, float right, float bottom, float top, float zNear, float zFar, bool directX );
 	static Matrix4f perspectiveProjection( float fLeft, float fRight, float fBottom, float fTop, float fZNear, float fZFar, bool directX );
 	static Matrix4f perspectiveProjection( float fovYRadians, float aspect, float zNear, float zFar, bool directX );
+    static Matrix4f perspectiveProjection( float fovYRadians, float aspect, float zNear, float zFar);
 	static Matrix4f infinitePerspectiveProjection( float fLeft, float fRight, float fBottom, float fTop, float fZNear, bool directX );
 
 	// Returns the rotation matrix represented by a quaternion
@@ -103,4 +108,9 @@ Vector4f operator * ( const Matrix4f& m, const Vector4f& v );
 // Matrix-Matrix multiplication
 Matrix4f operator * ( const Matrix4f& x, const Matrix4f& y );
 
+inline ostream &operator<<(ostream &os, const Matrix4f &m)
+{
+    os<<m.print();
+    return os;
+}
 #endif // MATRIX4F_H

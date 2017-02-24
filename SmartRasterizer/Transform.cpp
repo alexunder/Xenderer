@@ -17,7 +17,7 @@ void Transform::init(int width, int height)
     float aspect = (float)width / ((float)height);
     mWorld = Matrix4f::identity();
     mCam = Matrix4f::identity();
-    mProj = Matrix4f::perspectiveProjection(PI*0.5, aspect, 1.0, 500.0f, true);
+    mProj = Matrix4f::perspectiveProjection(PI*0.5, aspect, 1.0, 500.0f);
 
     mWidth  = (float)width;
     mHeight = (float)height;
@@ -60,7 +60,14 @@ void Transform::homogenize(Vector4f &x, Vector4f &y)
 
 void Transform::DebugDump()
 {
-    cout<<"Transform Information:"<<endl;
-    count<<"Width="<<mWidth<<"Height="<<mHeight<<endl;
-    cout<<"The World matrix is"<<endl;
+    cout << "Transform Information:" << endl;
+    cout << "Width=" << mWidth << "," << "Height=" << mHeight << endl;
+    cout << "The World matrix is" << endl;
+    cout << mWorld << endl;
+    cout << "The Camera matrix is" << endl;
+    cout << mCam << endl;
+    cout << "The Projection matrix is" << endl;
+    cout << mProj << endl;
+    cout << "The Final matrix is" << endl;
+    cout << mFinal << endl;
 }
