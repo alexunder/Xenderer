@@ -36,10 +36,15 @@ public:
     void DrawPlane(int a, int b, int c, int d);
     void DrawLine(int x1, int y1, int x2, int y2);
     void initCamera(float x, float y, float z);
+	void clear(int mode);
     unsigned int * getFB()
     {
         return mFrameBuffer;
     }
+	void SetRenderState(RenderState state)
+	{
+		mRenderState = state;
+	}
 private:
     void init(int width, int height);
     void DestroyBuffer();

@@ -510,10 +510,10 @@ Matrix4f Matrix4f::lookAt( const Vector3f& eye, const Vector3f& center, const Ve
 	// the affine part defines the overall translation
 	Matrix4f view;
 
-	view.setRow( 0, Vector4f( x, -Vector3f::dot( x, eye ) ) );
-	view.setRow( 1, Vector4f( y, -Vector3f::dot( y, eye ) ) );
-	view.setRow( 2, Vector4f( z, -Vector3f::dot( z, eye ) ) );
-	view.setRow( 3, Vector4f( 0, 0, 0, 1 ) );
+	view.setCol( 0, Vector4f( x, -Vector3f::dot( x, eye ) ) );
+	view.setCol( 1, Vector4f( y, -Vector3f::dot( y, eye ) ) );
+	view.setCol( 2, Vector4f( z, -Vector3f::dot( z, eye ) ) );
+	view.setCol( 3, Vector4f( 0, 0, 0, 1 ) );
 
 	return view;
 }

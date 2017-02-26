@@ -33,7 +33,7 @@ void Transform::update()
 
 void Transform::apply(Vector4f &x, Vector4f &y)
 {
-    y = mFinal * x;
+    y = mFinal.transposed() * x;
 }
 
 int Transform::check_cvv(Vector4f &v)

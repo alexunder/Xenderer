@@ -199,8 +199,11 @@ int main (int argc, char *argv[])
 //#ifdef __DEBUG
         debug_frameBuffer("texture.ppm", 256, 256, texture);
 //#endif
-        //device->SetTexture(texture, 4, 256, 256);
-        device->DrawBox(0.0);
+        device->SetTexture(texture, 4, 256, 256);
+        //device->SetRenderState(RENDERING_WIREFRAME);
+        device->SetRenderState(RENDERING_COLOR);
+        device->clear(0);
+		device->DrawBox(0.0);
     }
 
     if (debugDumpFile != NULL)

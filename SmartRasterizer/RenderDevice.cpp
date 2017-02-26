@@ -15,6 +15,8 @@ int CMID(int x, int min, int max)
 
 RenderDevice::RenderDevice(int width, int height)
 {
+	mFrameBuffer = NULL;
+	mZBuffer = NULL;
     init(width, height);
 }
 
@@ -22,7 +24,7 @@ RenderDevice::RenderDevice()
 {
     mWidth = 800;
     mHeight = 600;
-    mFrameBuffer = NULL;;
+    mFrameBuffer = NULL;
     mZBuffer = NULL;;
     mTexture = NULL;
     mTextureWidth = 2;
@@ -52,9 +54,33 @@ void RenderDevice::init(int width, int height)
     cout<<"RenderDevice::init"<<endl;
     mTransform.DebugDump();
 #endif
-    mBackgroundColor.setColor(0xff, 0xff, 0xff);
+    mBackgroundColor.setColor(0xc0, 0xc0, 0xc0);
     mForegroundColor.setColor(0, 0, 0);
     mRenderState = RENDERING_WIREFRAME;
+}
+
+void RenderDevice::clear(int mode)
+{
+	int y;
+	int x;
+	int height = mHeight;
+	for (y = 0; y < mHeight; y++)
+	{
+		//IUINT32 *dst = device->framebuffer[y];
+		unsigned int cc = (height - 1 - y) * 230 / (height - 1);
+		cc = (cc << 16) | (cc << 8) | cc;
+		if (mode == 0)
+			cc = mBackgroundColor.ToUInt32(true);
+		for (x = mWidth; x > 0; x--)
+			mFrameBuffer[y*mWidth + x] = cc;
+	}
+
+	for (y = 0; y < mHeight; y++)
+	{
+		for (x = mWidth; x > 0; x--)
+			mZBuffer[y*mWidth + x] = 0.0f;
+	}
+
 }
 
 void RenderDevice::DestroyBuffer()
@@ -107,7 +133,6 @@ void RenderDevice::DrawBox(float theta)
     DrawPlane(1, 5, 6, 2);
     DrawPlane(2, 6, 7, 3);
     DrawPlane(3, 7, 4, 0);
-
 }
 
 void RenderDevice::DrawPlane(int a, int b, int c, int d)
@@ -127,7 +152,13 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
     Vector4f p1(v1->x, v1->y, v1->z, v1->w);
     Vector4f p2(v2->x, v2->y, v2->z, v2->w);
     Vector4f p3(v3->x, v3->y, v3->z, v3->w);
-
+#ifdef __DEBUG
+	cout<<"DrawPrimitive, RenderState="<<mRenderState<<endl;
+	cout<<"DrawPrimitive, before apply. p1, p2, p3, p4."<<endl;
+	p1.print();
+	p2.print();
+	p3.print();
+#endif
     Vector4f c1;
     Vector4f c2;
     Vector4f c3;
@@ -135,7 +166,12 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
     mTransform.apply(p1, c1);
     mTransform.apply(p2, c2);
     mTransform.apply(p3, c3);
-
+#ifdef __DEBUG
+	cout<<"DrawPrimitive, before homo. c1, c2, c3, c4."<<endl;
+	c1.print();
+	c2.print();
+	c3.print();
+#endif
     if (mTransform.check_cvv(c1) != 0) return;
     if (mTransform.check_cvv(c2) != 0) return;
     if (mTransform.check_cvv(c3) != 0) return;
@@ -143,6 +179,12 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
     mTransform.homogenize(c1, p1);
     mTransform.homogenize(c2, p2);
     mTransform.homogenize(c3, p3);
+#ifdef __DEBUG
+	cout<<"DrawPrimitive, after homo. p1, p2, p3, p4."<<endl;
+	p1.print();
+	p2.print();
+	p3.print();
+#endif
 
     if (mRenderState & (RENDERING_TEXTURE | RENDERING_COLOR))
     {

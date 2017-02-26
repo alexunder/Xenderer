@@ -110,7 +110,17 @@ Matrix4f operator * ( const Matrix4f& x, const Matrix4f& y );
 
 inline ostream &operator<<(ostream &os, const Matrix4f &m)
 {
-    os<<m.print();
-    return os;
+    //m.print();
+   	for (int i = 0; i < 4; i++)
+	{
+		os << "|   ";
+		for (int j = 0; j < 4; j++)
+		{
+			os << setw(10) << m(i, j);
+		}
+		os << "   |\n";
+	}
+	os << endl;
+	return os;
 }
 #endif // MATRIX4F_H
