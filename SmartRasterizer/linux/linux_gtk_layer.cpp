@@ -7,7 +7,7 @@
 #include <gtk/gtk.h>
 #include "os_layer.h"
 
-gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event, 
+gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event,
                           gpointer data) {
     UIContext * pCurrentContext = (UIContext *)data;
 	cairo_t *cr = gdk_cairo_create(widget->window);

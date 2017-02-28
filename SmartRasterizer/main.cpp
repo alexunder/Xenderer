@@ -104,11 +104,10 @@ void test_triangle_rasterize() {
     gCanvas.RasterizeTriangle(color, x0, y0, x1, y1, x2, y2);
 }
 
-void GenerateTextureForTest(unsigned int ** texture)
+unsigned int * GenerateTextureForTest()
 {
-    unsigned int * buffer = *texture;
     int single = sizeof(unsigned int);
-    buffer = (unsigned int *)malloc(256*256*single);
+    unsigned int * buffer = (unsigned int *)malloc(256*256*single);
     int i;
     int j;
     for (j = 0; j < 256; j++)
@@ -117,9 +116,12 @@ void GenerateTextureForTest(unsigned int ** texture)
         int x = i / 32, y = j / 32;
         buffer[j*256 + i] = ((x + y) & 1)? 0xffffff : 0x3fbcef;
     }
+    return buffer;
 }
 
-void debug_frameBuffer(char * FileName, int width, int height, unsigned int * buffer) {
+void debug_frameBuffer(char * FileName, int width, int height,
+                        unsigned int * buffer, bool isRGBOrder)
+{
     if (buffer == NULL || FileName == NULL)
         return;
 
@@ -138,10 +140,20 @@ void debug_frameBuffer(char * FileName, int width, int height, unsigned int * bu
     for (y = 0; y <= height; y++) {
         for (x = 0; x < width; x++) {
             unsigned int value = buffer[y*width + x];
-            char a = (char)((0xff000000&value) >> 24);
-            char r = (char)((0x00ff0000&value) >> 16);
-            char g = (char)((0x0000ff00&value) >> 8);
-            char b = (char)((0x000000ff&value));
+            char a, r, g, b;
+            a = (char)(((0xff << 24) & value) >> 24);
+            g = (char)(((0xff << 8) & value) >> 8);
+
+            if (isRGBOrder)
+            {
+                b = (char)((0xff & value));
+                r = (char)(((0xff << 16) & value) >> 16);
+            }
+            else
+            {
+                r = (char)((0xff & value));
+                b = (char)(((0xff << 16) & value) >> 16);
+            }
             fputc(r, file);
             fputc(g, file);
             fputc(b, file);
@@ -194,16 +206,17 @@ int main (int argc, char *argv[])
     {
         device = new RenderDevice(width, height);
         pContext->SetRenderDevice(device);
-        device->initCamera(3, 0, 0);
-        GenerateTextureForTest(&texture);
-//#ifdef __DEBUG
-        debug_frameBuffer("texture.ppm", 256, 256, texture);
-//#endif
+        device->initCamera(3.5, 0, 0);
+        texture = GenerateTextureForTest();
+#ifdef __DEBUG
+        cout<<"texture="<<texture<<endl;
+        debug_frameBuffer("texture.ppm", 256, 256, texture, true);
+#endif
         device->SetTexture(texture, 4, 256, 256);
         //device->SetRenderState(RENDERING_WIREFRAME);
-        device->SetRenderState(RENDERING_COLOR);
-        device->clear(0);
-		device->DrawBox(0.0);
+        //device->SetRenderState(RENDERING_COLOR);
+        device->clear(1);
+		device->DrawBox(1.0);
     }
 
     if (debugDumpFile != NULL)
@@ -212,7 +225,7 @@ int main (int argc, char *argv[])
         if (fb != NULL)
         {
             debug_frameBuffer(debugDumpFile, pContext->getWidth(),
-                    pContext->getHeight(), fb);
+                    pContext->getHeight(), fb, false);
         }
     }
 

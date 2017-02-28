@@ -20,7 +20,7 @@ SRC = linux_gtk_layer.cpp \
 	  $(SRCDIR)/Transform.cpp
 
 TARGET = SmartRasterizer
-CFLAGS = -D__DEBUG -g `pkg-config --cflags --libs gtk+-2.0`
+CFLAGS = -D__DEBUG -DUSE_GTK -g `pkg-config --cflags --libs gtk+-2.0`
 CFLAGS += -I../
 CFLAGS += -I../include/
 CFLAGS += -I../include/math/

@@ -5,13 +5,11 @@
 
 #include "RenderDevice.h"
 #include "MeshObjectModel.h"
+#include "util.h"
 #include <stdlib.h>
 #include <string.h>
 
-int CMID(int x, int min, int max)
-{
-    return (x < min)? min : ((x > max)? max : x);
-}
+using namespace tools;
 
 RenderDevice::RenderDevice(int width, int height)
 {
@@ -68,7 +66,7 @@ void RenderDevice::clear(int mode)
 	{
 		//IUINT32 *dst = device->framebuffer[y];
 		unsigned int cc = (height - 1 - y) * 230 / (height - 1);
-		cc = (cc << 16) | (cc << 8) | cc;
+		cc =(255 << 24) | (cc << 16) | (cc << 8) | cc;
 		if (mode == 0)
 			cc = mBackgroundColor.ToUInt32(true);
 		for (x = mWidth; x > 0; x--)
@@ -119,9 +117,10 @@ vertex_t mesh[8] =
 //For test only
 void RenderDevice::DrawBox(float theta)
 {
-    const Vector3f dir(-1, 0.5, 1);
+    const Vector3f dir(-1, -0.5, 1);
     Matrix4f m = Matrix4f::rotation(dir, theta);
-    mTransform.setWorld(m);
+    Matrix4f w = m.transposed();
+    mTransform.setWorld(w);
     mTransform.update();
 #ifdef __DEBUG
     cout<<"RenderDevice::DrawBox"<<endl;
@@ -255,13 +254,7 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
                     float r = wt0 * v1->r + wt1 * v2->r + wt2 * v3->r;
                     float g = wt0 * v1->g + wt1 * v2->g + wt2 * v3->g;
                     float b = wt0 * v1->b + wt1 * v2->b + wt2 * v3->b;
-                    int R = (int)(r * 255.0f);
-                    int G = (int)(g * 255.0f);
-                    int B = (int)(b * 255.0f);
-                    R = CMID(R, 0, 255);
-                    G = CMID(G, 0, 255);
-                    B = CMID(B, 0, 255);
-                    mFrameBuffer[py*mWidth + px] = (R << 16) | (G << 8) | (B);
+					DrawPixel(px, py, Color(r, g, b));
                 }
 
                 if (mRenderState & RENDERING_TEXTURE)
@@ -269,7 +262,12 @@ void RenderDevice::DrawPrimitive(vertex_t *v1, vertex_t *v2, vertex_t *v3)
                     float u = wt0 * v1->u + wt1 * v2->u + wt2 * v3->u;
                     float v = wt0 * v1->v + wt1 * v2->v + wt2 * v3->v;
                     unsigned int cc = TextureRead(u, v);
-                    mFrameBuffer[py*mWidth + px] = cc;
+                    unsigned char r = (cc & (0xff << 16)) >> 16;
+                    unsigned char g = (cc & (0xff << 8 )) >> 8;
+                    unsigned char b = cc & (0xff);
+                    Color color;
+                    color.setColor(r, g, b);
+                    DrawPixel(px, py, color);
                 }
             }
         }
@@ -287,8 +285,11 @@ void RenderDevice::DrawPixel(int x, int y, const Color &c)
 {
     if(x >= mWidth || y >= mHeight)
         return;
-
+#ifdef USE_GTK
+    mFrameBuffer[y * mWidth + x] = c.ToUInt32(true, false);
+#else
     mFrameBuffer[y * mWidth + x] = c.ToUInt32(true);
+#endif
 }
 
 void RenderDevice::SetTexture(void *bits, int granularity, int w, int h)
@@ -296,8 +297,7 @@ void RenderDevice::SetTexture(void *bits, int granularity, int w, int h)
     if (w > 1024 || h > 1024)
         return;
 
-    unsigned char *ptr = (unsigned char*)bits;
-    mTexture = ptr;
+    mTexture = (unsigned int *)bits;
     mTextureWidth = w;
     mTextureHeight = h;
     mMaxU = (float)(w - 1);
@@ -316,9 +316,9 @@ unsigned int RenderDevice::TextureRead(float u, float v)
     v = v * mMaxV;
     x = (int)(u + 0.5f);
     y = (int)(v + 0.5f);
-    x = CMID(x, 0, mTextureWidth - 1);
-    y = CMID(y, 0, mTextureHeight - 1);
-    return mTexture[y*mTextureWidth*mGranularity + x];
+    x = utils::CMID(x, 0, mTextureWidth - 1);
+    y = utils::CMID(y, 0, mTextureHeight - 1);
+    return mTexture[y*mTextureWidth + x];
 }
 
 

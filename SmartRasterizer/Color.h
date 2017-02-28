@@ -25,7 +25,7 @@ public:
         B = ((float)b / 255.0);
     }
 
-    unsigned int ToUInt32(bool isAlphaHead = true) const;
+    unsigned int ToUInt32(bool isAlphaHead = true, bool isRGBOrder = true) const;
 
     Color operator + (const Color &c) const;
     Color operator - (const Color &c) const;
