@@ -198,25 +198,74 @@ int main (int argc, char *argv[])
 
         if (test_rasterize_triangle_mode == true)
             test_triangle_rasterize();
+        pContext->Prepare();
     }
 
     RenderDevice * device = NULL;
     unsigned int * texture = NULL;
     if  (test_rasterize_cubic_mode == true)
     {
+        float alpha = 1;
+        float pos = 3.5;
+        int indicator = 0;
+        int kbhit = 0;
+        int render_states[] = { RENDERING_WIREFRAME,
+                                RENDERING_TEXTURE,
+                                RENDERING_COLOR };
         device = new RenderDevice(width, height);
         pContext->SetRenderDevice(device);
         device->initCamera(3.5, 0, 0);
         texture = GenerateTextureForTest();
-#ifdef __DEBUG
-        cout<<"texture="<<texture<<endl;
-        debug_frameBuffer("texture.ppm", 256, 256, texture, true);
-#endif
         device->SetTexture(texture, 4, 256, 256);
-        //device->SetRenderState(RENDERING_WIREFRAME);
+        pContext->Prepare();
         //device->SetRenderState(RENDERING_COLOR);
-        device->clear(1);
-		device->DrawBox(1.0);
+        int keyState;
+        //while (!pContext->isQuit())
+        {
+#ifdef __DEBUG
+            cout<<"Rendering loop!"<<endl;
+#endif
+            device->clear(1);
+            device->initCamera(pos, 0, 0);
+            /*
+            keyState = pContext->getKeyPressState();
+            switch(keyState)
+            {
+                case KEYPRESS_UP:
+                    printf("Up\n");
+                    pos -= 0.01f;
+                    break;
+                case KEYPRESS_LEFT:
+                    alpha += 0.01f;
+                    printf("Left\n");
+                    break;
+                case KEYPRESS_RIGHT:
+                    alpha -= 0.01f;
+                    printf("Right\n");
+                    break;
+                case KEYPRESS_DOWN:
+                    printf("Down\n");
+                    pos -= 0.01f;
+                    break;
+                case KEYPRESS_SPACE:
+                    printf("Space\n");
+                    if (kbhit == 0)
+                    {
+                        kbhit = 1;
+                        if (++indicator >= 3) indicator = 0;
+                        device->SetRenderState((RenderState)render_states[indicator]);
+                    }
+                    else
+                    {
+                        kbhit = 0;
+                    }
+                    break;
+            }
+            */
+            device->DrawBox(alpha);
+            pContext->InvalidateArea();
+            pContext->mainloop();
+        }
     }
 
     if (debugDumpFile != NULL)
@@ -229,7 +278,6 @@ int main (int argc, char *argv[])
         }
     }
 
-    pContext->Prepare();
 
     if (pMesh != NULL)
         delete pMesh;

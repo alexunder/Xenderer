@@ -286,7 +286,7 @@ void RenderDevice::DrawPixel(int x, int y, const Color &c)
     if(x >= mWidth || y >= mHeight)
         return;
 #ifdef USE_GTK
-    mFrameBuffer[y * mWidth + x] = c.ToUInt32(true, false);
+    mFrameBuffer[ (mHeight - y) * mWidth + x] = c.ToUInt32(true, false);
 #else
     mFrameBuffer[y * mWidth + x] = c.ToUInt32(true);
 #endif
