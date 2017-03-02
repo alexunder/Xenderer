@@ -1,18 +1,18 @@
 //=====================================================================
-// 
+//
 // mini3d.c - Mini Software Render All-In-One
 //
 // build:
 //   mingw: gcc -O3 mini3d.c -o mini3d.exe -lgdi32
-//   msvc:  cl -O2 -nologo mini3d.c 
+//   msvc:  cl -O2 -nologo mini3d.c
 //
 // history:
 //   2007.7.01  skywind  create this file as a tutorial
 //   2007.7.02  skywind  implementate texture and color render
 //   2008.3.15  skywind  fixed a trapezoid issue
 //   2015.8.09  skywind  rewrite with more comment
-//   2015.8.12  skywind  adjust interfaces for clearity 
-// 
+//   2015.8.12  skywind  adjust interfaces for clearity
+//
 //=====================================================================
 #include <stdio.h>
 #include <stdlib.h>
@@ -31,6 +31,8 @@
 
 typedef unsigned int IUINT32;
 
+void debug_frameBuffer(char * FileName, int width, int height,
+				unsigned char * buffer);
 //=====================================================================
 // 数学库：此部分应该不用详解，熟悉 D3D 矩阵变换即可
 //=====================================================================
@@ -95,7 +97,7 @@ void vector_normalize(vector_t *v) {
 	float length = vector_length(v);
 	if (length != 0.0f) {
 		float inv = 1.0f / length;
-		v->x *= inv; 
+		v->x *= inv;
 		v->y *= inv;
 		v->z *= inv;
 	}
@@ -138,7 +140,7 @@ void matrix_mul(matrix_t *c, const matrix_t *a, const matrix_t *b) {
 void matrix_scale(matrix_t *c, const matrix_t *a, float f) {
 	int i, j;
 	for (i = 0; i < 4; i++) {
-		for (j = 0; j < 4; j++) 
+		for (j = 0; j < 4; j++)
 			c->m[i][j] = a->m[i][j] * f;
 	}
 }
@@ -153,7 +155,7 @@ void matrix_apply(vector_t *y, const vector_t *x, const matrix_t *m) {
 }
 
 void matrix_set_identity(matrix_t *m) {
-	m->m[0][0] = m->m[1][1] = m->m[2][2] = m->m[3][3] = 1.0f; 
+	m->m[0][0] = m->m[1][1] = m->m[2][2] = m->m[3][3] = 1.0f;
 	m->m[0][1] = m->m[0][2] = m->m[0][3] = 0.0f;
 	m->m[1][0] = m->m[1][2] = m->m[1][3] = 0.0f;
 	m->m[2][0] = m->m[2][1] = m->m[2][3] = 0.0f;
@@ -203,7 +205,7 @@ void matrix_set_rotate(matrix_t *m, float x, float y, float z, float theta) {
 	m->m[1][2] = 2 * y * z + 2 * w * x;
 	m->m[2][2] = 1 - 2 * x * x - 2 * y * y;
 	m->m[0][3] = m->m[1][3] = m->m[2][3] = 0.0f;
-	m->m[3][0] = m->m[3][1] = m->m[3][2] = 0.0f;	
+	m->m[3][0] = m->m[3][1] = m->m[3][2] = 0.0f;
 	m->m[3][3] = 1.0f;
 }
 
@@ -231,7 +233,7 @@ void matrix_set_lookat(matrix_t *m, const vector_t *eye, const vector_t *at, con
 	m->m[1][2] = zaxis.y;
 	m->m[2][2] = zaxis.z;
 	m->m[3][2] = -vector_dotproduct(&zaxis, eye);
-	
+
 	m->m[0][3] = m->m[1][3] = m->m[2][3] = 0.0f;
 	m->m[3][3] = 1.0f;
 }
@@ -251,7 +253,7 @@ void matrix_set_perspective(matrix_t *m, float fovy, float aspect, float zn, flo
 //=====================================================================
 // 坐标变换
 //=====================================================================
-typedef struct { 
+typedef struct {
 	matrix_t world;         // 世界坐标变换
 	matrix_t view;          // 摄影机坐标变换
 	matrix_t projection;    // 投影变换
@@ -278,7 +280,7 @@ void transform_init(transform_t *ts, int width, int height) {
 	transform_update(ts);
 }
 
-// 将矢量 x 进行 project 
+// 将矢量 x 进行 project
 void transform_apply(const transform_t *ts, vector_t *y, const vector_t *x) {
 	matrix_apply(y, x, &ts->transform);
 }
@@ -366,7 +368,7 @@ void vertex_add(vertex_t *y, const vertex_t *x) {
 }
 
 // 根据三角形生成 0-2 个梯形，并且返回合法梯形的数量
-int trapezoid_init_triangle(trapezoid_t *trap, const vertex_t *p1, 
+int trapezoid_init_triangle(trapezoid_t *trap, const vertex_t *p1,
 	const vertex_t *p2, const vertex_t *p3) {
 	const vertex_t *p;
 	float k, x;
@@ -504,7 +506,7 @@ void device_init(device_t *device, int width, int height, void *fb) {
 	device->max_v = 1.0f;
 	device->width = width;
 	device->height = height;
-	device->background = 0xc0c0c0;
+	device->background = 0xffffff;
 	device->foreground = 0;
 	transform_init(&device->transform, width, height);
 	device->render_state = RENDER_STATE_WIREFRAME;
@@ -512,7 +514,7 @@ void device_init(device_t *device, int width, int height, void *fb) {
 
 // 删除设备
 void device_destroy(device_t *device) {
-	if (device->framebuffer) 
+	if (device->framebuffer)
 		free(device->framebuffer);
 	device->framebuffer = NULL;
 	device->zbuffer = NULL;
@@ -524,7 +526,7 @@ void device_set_texture(device_t *device, void *bits, long pitch, int w, int h) 
 	char *ptr = (char*)bits;
 	int j;
 	assert(w <= 1024 && h <= 1024);
-	for (j = 0; j < h; ptr += pitch, j++) 	// 重新计算每行纹理的指针
+	for (j = 0; j < h; ptr += pitch, j++)
 		device->texture[j] = (IUINT32*)ptr;
 	device->tex_width = w;
 	device->tex_height = h;
@@ -551,7 +553,7 @@ void device_clear(device_t *device, int mode) {
 // 画点
 void device_pixel(device_t *device, int x, int y, IUINT32 color) {
 	if (((IUINT32)x) <= (IUINT32)device->width && ((IUINT32)y) <= (IUINT32)device->height) {
-		device->framebuffer[y][x] = color;
+		device->framebuffer[y][x] = (255 << 24) | color;
 	}
 }
 
@@ -627,7 +629,7 @@ void device_draw_scanline(device_t *device, scanline_t *scanline) {
 	for (; w > 0; x++, w--) {
 		if (x >= 0 && x < width) {
 			float rhw = scanline->v.rhw;
-			if (rhw >= zbuffer[x]) {	
+			if (rhw >= zbuffer[x]) {
 				float w = 1.0f / rhw;
 				zbuffer[x] = rhw;
 				if (render_state & RENDER_STATE_COLOR) {
@@ -640,13 +642,13 @@ void device_draw_scanline(device_t *device, scanline_t *scanline) {
 					R = CMID(R, 0, 255);
 					G = CMID(G, 0, 255);
 					B = CMID(B, 0, 255);
-					framebuffer[x] = (R << 16) | (G << 8) | (B);
+					framebuffer[x] = (255 << 24) | (R << 16) | (G << 8) | (B);
 				}
 				if (render_state & RENDER_STATE_TEXTURE) {
 					float u = scanline->v.tc.u * w;
 					float v = scanline->v.tc.v * w;
 					IUINT32 cc = device_texture_read(device, u, v);
-					framebuffer[x] = cc;
+					framebuffer[x] = (255 << 24) | cc;
 				}
 			}
 		}
@@ -672,7 +674,7 @@ void device_render_trap(device_t *device, trapezoid_t *trap) {
 }
 
 // 根据 render_state 绘制原始三角形
-void device_draw_primitive(device_t *device, const vertex_t *v1, 
+void device_draw_primitive(device_t *device, const vertex_t *v1,
 	const vertex_t *v2, const vertex_t *v3) {
 	point_t p1, p2, p3, c1, c2, c3;
 	int render_state = device->render_state;
@@ -699,17 +701,17 @@ void device_draw_primitive(device_t *device, const vertex_t *v1,
 		trapezoid_t traps[2];
 		int n;
 
-		t1.pos = p1; 
+		t1.pos = p1;
 		t2.pos = p2;
 		t3.pos = p3;
 		t1.pos.w = c1.w;
 		t2.pos.w = c2.w;
 		t3.pos.w = c3.w;
-		
+
 		vertex_rhw_init(&t1);	// 初始化 w
 		vertex_rhw_init(&t2);	// 初始化 w
 		vertex_rhw_init(&t3);	// 初始化 w
-		
+
 		// 拆分三角形为0-2个梯形，并且返回可用梯形数量
 		n = trapezoid_init_triangle(traps, &t1, &t2, &t3);
 
@@ -732,7 +734,7 @@ int screen_w, screen_h, screen_exit = 0;
 int screen_mx = 0, screen_my = 0, screen_mb = 0;
 int screen_keys[512];	// 当前键盘按下状态
 
-float alpha = 1;
+float alpha = 0.0;
 float pos = 3.5;
 
 #ifdef WINDOWS
@@ -749,17 +751,27 @@ int screen_close(void);								// 关闭屏幕
 void screen_dispatch(void);							// 处理消息
 void screen_update(void);							// 显示 FrameBuffer
 
-gboolean on_expose_event (GtkWidget * widget, GdkEventExpose *event,
+gboolean on_expose_event(GtkWidget * widget, GdkEventExpose *event,
                           gpointer data) {
-    printf("on expose event.\n");
-	cairo_t *cr = gdk_cairo_create(widget->window);
-    GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(screen_fb, 
-		GDK_COLORSPACE_RGB, TRUE, 8, screen_w, screen_h,
-        screen_w * 4, NULL, NULL);
+    cairo_t *cr = gdk_cairo_create(gtk_widget_get_window(widget));
+    const unsigned char * fb = (const unsigned char *)data;
+    /*
+    cairo_arc(cr,200,200,100,0,2*M_PI);
+    cairo_stroke(cr);
+    cairo_set_line_width(cr,1);
+    cairo_set_source_rgb(cr,1,0,0);
+    cairo_move_to(cr,100,200);
+    cairo_line_to(cr,300,200);
+    cairo_stroke(cr);
+    */
+    printf("w=%d, h=%d\n", screen_w, screen_h);
+    debug_frameBuffer("buffer.ppm", screen_w, screen_h, fb);
+    GdkPixbuf * pixframebuffer = gdk_pixbuf_new_from_data(fb,
+            GDK_COLORSPACE_RGB, TRUE, 8,
+	    screen_w, screen_h,
+            screen_w*4, NULL, NULL);
     gdk_cairo_set_source_pixbuf(cr, pixframebuffer, 0, 0);
     cairo_paint(cr);
-    g_object_unref(pixframebuffer);
-
     cairo_destroy(cr);
     return FALSE;
 }
@@ -819,12 +831,14 @@ int screen_close(void) {
 }
 
 void screen_dispatch(void) {
-	GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
     g_signal_connect(window, "destroy", G_CALLBACK (gtk_main_quit), NULL);
     gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER);
     gtk_widget_set_size_request(window, screen_w, screen_h);
-	gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
-    g_signal_connect(window, "expose-event", G_CALLBACK(on_expose_event), NULL);
+    gtk_window_set_resizable(GTK_WINDOW(window), FALSE);
+
+    g_signal_connect(window, "expose-event", G_CALLBACK(on_expose_event),
+		     screen_fb);
     g_signal_connect(window, "key-press-event", G_CALLBACK(on_key_event), NULL);
     gtk_widget_set_app_paintable(window, TRUE);
     gtk_widget_show_all(window);
@@ -888,7 +902,9 @@ void init_texture(device_t *device) {
 	device_set_texture(device, texture, 256 * 4, 256, 256);
 }
 
-void debug_frameBuffer(char * FileName, int width, int height, unsigned char * buffer) {
+void debug_frameBuffer(char * FileName, int width, int height,
+		       unsigned char * buffer)
+{
     if (buffer == NULL || FileName == NULL)
         return;
 
@@ -901,12 +917,12 @@ void debug_frameBuffer(char * FileName, int width, int height, unsigned char * b
     fprintf (file, "# Creator: debug\n");
     fprintf (file, "%d %d\n", width, height);
     fprintf (file, "255\n");
-
+    unsigned int * buf = (unsigned int *)buffer;
     int y;
     int x;
     for (y = height - 1; y >= 0; y--) {
         for (x = 0; x < width; x++) {
-            unsigned int value = buffer[y*width + x];
+            unsigned int value = buf[y*width + x];
             char a = (char)((0xff000000&value) >> 24);
             char r = (char)((0x00ff0000&value) >> 16);
             char g = (char)((0x0000ff00&value) >> 8);
@@ -922,31 +938,27 @@ void debug_frameBuffer(char * FileName, int width, int height, unsigned char * b
 
 int main(int argc, char *argv[]) {
 	device_t device;
-	int states[] = { RENDER_STATE_TEXTURE, RENDER_STATE_COLOR, RENDER_STATE_WIREFRAME };
+	int states[] = { RENDER_STATE_TEXTURE, RENDER_STATE_COLOR,
+			 RENDER_STATE_WIREFRAME };
 	int indicator = 0;
 	int kbhit = 0;
 
 	char *title = "Mini3d (software render tutorial) - "
 		"Left/Right: rotation, Up/Down: forward/backward, Space: switch state";
 
-	if (screen_init(argc, argv, 800, 600, title)) 
+	if (screen_init(argc, argv, 800, 600, title))
 		return -1;
 
-    device_init(&device, 800, 600, screen_fb);
+	device_init(&device, 800, 600, screen_fb);
 	camera_at_zero(&device, 3, 0, 0);
 
 	init_texture(&device);
 	device.render_state = RENDER_STATE_TEXTURE;
 
-//	while (screen_exit == 0 && screen_keys[VK_ESCAPE] == 0) {
 	device_clear(&device, 1);
 	camera_at_zero(&device, pos, 0, 0);
 	draw_box(&device, alpha);
-    debug_frameBuffer("buffer.ppm", screen_w, screen_h, screen_fb);
-//		screen_update();
-//		Sleep(1);
-//	}
+	debug_frameBuffer("buffer.ppm", screen_w, screen_h, screen_fb);
 	screen_dispatch();
 	return 0;
 }
-
